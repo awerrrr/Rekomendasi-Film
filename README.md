@@ -1,338 +1,1343 @@
-﻿# Laporan Akhir Machine Learning :  Skincare Recommendation System - Kevin Caesar
-## Proyek Overview
-![skincare_animasi](https://github.com/user-attachments/assets/ebefa55c-ab1d-4483-8307-7221c73a6b7c)
-
-Skincare sudah menjadi kebutuhan pokok sama halnya dengan sandang , pangan, dan papan [[1]](https://jurnal.umsu.ac.id/index.php/MANEGGIO/article/view/17785) . Skincare merupakan produk perawatan kulit yang berfungsi untuk membantu menjaga kulit supaya tetap sehat dan terawat serta melindungi   dari   radikal   bebas   yang   akan   menyebabkan   rusaknya   lapisan epidermis  kulit [[2]](https://www.jurnal.politeknik-kebumen.ac.id/E-Bis/article/view/668/305). Keanekaragaman  produk  dan  manfaatnya  yang  beragam  terus  dikembangkan oleh pelaku usaha skincare dari segi kualitas produk dan harga untuk menarik lebih banyak konsumen [[3]](https://journal.stieamkop.ac.id/index.php/yume/article/view/1545/992). Adapun faktor lain yang harus diperhatikan karena dapat mempengaruhi keputusan konsumen, yaitu ulasan konsumen online dan penilaian konsumen online, keduanya dapat meningkatkan kepercayaan konsumen [[3]](https://journal.stieamkop.ac.id/index.php/yume/article/view/1545/992). Salah satu masalah dalam membeli produk perawatan kulit secara online adalah pengguna tidak dapat mencoba produk tersebut dan bergantung pada ulasan penilaian pelanggan lain. Namun, ulasan penilaian pada skala 1 hingga 5 dianggap tidak cukup untuk mewakili kualitas produk, dan pengguna perlu membaca teks ulasan yang ditulis oleh pengguna lain untuk mendapatkan informasi yang lebih spesifik tentang kualitas produk [[4]](https://ieeexplore.ieee.org/abstract/document/10037471). customer  atau pengguna yang  masih  awam  dalam  dunia skincaremasih mengalami  kesulitan dalami mengkatagorikan  produk,  misalnya  mereka  kurang  mengetahui mana toner dan serum. Oleh karena itu diperlukan sebuah sistem yang dapat merekomendasikan produk skincare [[5]](https://ejournal.umm.ac.id/index.php/repositor/article/view/32284/14105).
-
-Sistem rekomendasi telah menjadi bagian yang tak terpisahkan dari hampir semua sistem berbasis informasi serta e-commerce pada umumnya digunakan agar tepat pemberian saran pelanggan kepada pelanggan. Algoritma dan kecerdasan buatan atau Artificial Intelligence (AI) kini digunakan untuk membuat rekomendasi skincare personal, mendeteksi kebutuhan skincare, atau bahkan menghasilkan skincare. Oleh karena itu, penulis ingin mengembangkan sistem rekomendasi musik dengan 2 approach, yaitu content-based approach dan collaborative approach untuk memberikan sistem rekomendasi terbaik untuk pengguna. Hal ini penting agar pengguna dapat mendapatkan skincare rekomendasi terbaik untuk mereka serta juga penting bagi brand agar mereka mampu terus berkembang untuk memberikan produk terbaik bagi konsumennya.
-
-
-## Business Understanding
-### Problem Statements
-1. bagaimana pesebaran penggunaan skincare berdssarkan gender dan produk yang bebas cruelty free?
-2. bagaimana performa brand dan product berdasatkan rating?
-3. bagaimana efektivitas bahan dan performa produk menangani berbagai macam tipe kulit berdasarkan rating?
-4. Bagaimana cara membuat sistem rekomendasi terbaik yang dapat diimplementasikan?
-
-### Goals
-1. Mengetahui pesebaran penggunaan skincare berdssarkan gender dan produk yang bebas cruelty free
-2. Mengetahui performa brand dan product berdasatkan rating dengan menggunakan teknik visualisasi.
-3. membuat visualisasi heatmap dan grafik untuk efektivitas bahan dan performa produk menangani berbagai macam tipe kulit berdasarkan rating.
-4. Menggunakan algoritma cosine similarity maupun pemodelan machine learning untuk membuat sistem rekomendasi, lalu mengevaluasi menggunakan untuk menjamin keakuratan sistem rekomendasi.
-
-### Solution Approach
-Untuk mencapai goals di atas, berikut adalah pendekatan algoritma yang akan digunakan dalam pengembangan sistem rekomendasi skincare:
-1. Mengimplementasikan Exploratory Data Analysis (EDA) untuk analisis dan visualisasi data.
-2. Mengimplementasikan content-based filtering approach menggunakan algoritma cosine similarity.
-  pendekatan ini akan merekomendasikan skincare kepada pengguna berdasarkan kesamaan fitur skin type, categori skincare, dan ingredients. Cosine Similarity akan digunakan untuk mengukur seberapa mirip satu skincare dengan skincare lain berdasarkan representasi vektornya.
-3. Mengimplementasikan collaborative-based filtering approach menggunakan algoritma deep learning.
-  pendekatan ini akan memanfaatkan data rating dari pengguna lain untuk memberikan rekomendasi skincare. Dengan menggunakan Deep Learning, sistem akan mencari pengguna dengan pola rating yang mirip dan merekomendasikan skincare yang disukai oleh pengguna-pengguna tersebut.
-4. Evaluasi Performa Model 
-  setelah model dibangun, evaluasi performa akan dilakukan menggunakan metrik seperti Precision dan Root Mean Squared Error. Ini akan memberikan wawasan tentang efektivitas model dalam merekomendasikan skincare yang relevan kepada pengguna.
-
-## Data Understanding
-Dataset yang digunakan untuk membuat sistem rekomendasi skincare pada responden diambil dari platform kaggle yang dipublikasikan oleh Waqar Ali dengan usability score 10/10. Dataset dapat diakses pada link [berikut](https://www.kaggle.com/datasets/waqi786/most-used-beauty-cosmetics-products-in-the-world/data).
-
-### Keterangan Variabel
-Dataset ini memiliki 14 variabel dengan keterangan sebagai berikut.
-
-Variabel | Keterangan
-----------|----------
-user_id | nomor unik pembeli
-product_name | nama produk skincare
-brand | nama brand dari produk skincare
-category | Jenis produk skincare (serum, highlighter, mascara, faceoil,facemask)
-usage_frequency | frekuensi penggunaan produk (daily, weekly, monthly, occasional)
-Rating | Nilai produk dari skala 1.0-5.0 
-price_USD | Harga produk skincare
-Number of reviews | jumlah ulasan produk skincare
-product size | isi dari skincare dari 50mL sampai 250mL
-Gender Target | Target dari produk skincare
-skin type | jenis kulit (oily, normal, dry, combination, senstive)
-packaging type | bentuk packaging skincare (tube, compact, spray, stick, bottle, jar)
-main ingredients| bahan kandungan skincare seperti vitamin c, retinol
-cruelty free | skincare yang diujicobakan pada hewan
-country of origin | asal product skincare
-
-<br>
-
-| No | Column             | Non-Null Count | Dtype    |
-|----|--------------------|----------------|----------|
-| 0  | Product_Name       |15000 non-null  | object   |
-| 1  | Brand              |15000 non-null  | object   | 
-| 2  | Category           |15000 non-null  | object   | 
-| 3  | Usage_Frequency    |15000 non-null  | object   | 
-| 4  | Price_USD          |15000 non-null  | float64  |
-| 5  | Rating             |15000 non-null  | float64  |
-| 6  | Number_of_Reviews  |15000 non-null  | int64    |
-| 7  | Product_Size       |15000 non-null  | object   | 
-| 8  | Skin_Type          |15000 non-null  | object   | 
-| 9  | Gender_Target      |15000 non-null  | object   | 
-| 10 | Packaging_Type     |15000 non-null  | object   | 
-| 11 | Main_Ingredient    |15000 non-null  | object   | 
-| 12 | Cruelty_Free       |15000 non-null  | bool     | 
-| 13 | Country_of_Origin  |15000 non-null  | object   | 
-| 14 | user_id            |15000 non-null  | object   | 
-
-Dari tabel di atas didapat informasi tidak terdapat nilai null pada tiap kolom untuk dataset yang digunakan:
-   - Terdapat 11 fitur dengan tipe categorical atau object yaitu `Product name, brand, category, usage frequency, product size, skin type, gender target, packaging type, main ingredient, country of origin, user_id`.
-   - Terdapat 3 feature dengan tipe numeric terdiri dari 2 float64 yaitu `price_usd` dan `rating` ,sedangkan 1 int64 yaitu `number_of_reviews`.
-   - Terdapat 1 feature dengan tipe boolen yaitu `cruelty_free`.
-
-### Statistik Data
-Selanjutnya akan ditampilkan statistik data numerikal secara umum:
-| Statistic |	Price_USD   | Rating    |Number_of_Reviews|
-|-----------|-------------|-----------|-----------------|
-|   count   | 15000.00000 |	15000.000	| 15000.000000 	  |
-|   mean	  | 80.134108	  | 3.002327	| 5014.231333 	  |
-|   std	    | 40.402983	  | 1.168029	| 2855.665464 	  |
-|   min	    | 10.000000	  | 1.000000	| 52.000000   	  |
-|   25%	    | 45.480000	  | 2.000000	| 2562.000000     |
-|   50%	    | 80.040000	  | 3.000000	| 5002.000000     |
-|   75%	    | 114.760000  | 4.000000	| 7497.000000     |
-|   max	    | 149.990000  | 5.000000	| 10000.000000    |
-
-Table diatas memberikan informasi statistik pada masing-masing kolom, antara lain:
-
-- Count adalah jumlah sampel pada data.
-- Mean adalah nilai rata-rata.
-- Std adalah standar deviasi.
-- Min yaitu nilai minimum setiap kolom.
-- 25% adalah kuartil pertama. Kuartil adalah nilai yang menandai batas interval - dalam empat bagian sebaran yang sama.
-- 50% adalah kuartil kedua, atau biasa juga disebut median (nilai tengah).
-- 75% adalah kuartil ketiga.
-
-dari tabel diatas disimpulkan bahwa:
-- pada kolom `price_usd` menunjukkan bahwa harga produk skincare dengan harga paling murah 10 dollar dan paling mahal 149.9 dollar dengan rata2 keseluruhan harga produk skincare 80 dollar.
-- pada kolom `rating` menunjukkan bahwa pengguna menggunakan produk memberikan rating kurang baik dengan nilai 1.0 dan memberikan sangat baik 5.0 serta rata-rata produk skincare diberikan nilai 3.0.
-- pada kolom `number_of_reviews` menunjukkan bahwa review produk skincare pada suatu produk paling sedikit sebanyak 52 review dan paling banyak pada suatu produk 10000 review serta rata-rata produk skincare direview pengguna produk skincare sebanyak 5014 reviews.
-
-### Data Cleaning
-#### memeriksa data duplikasi
-<img width="613" alt="check_data_duplikat" src="https://github.com/user-attachments/assets/301bee93-b51e-4bc1-abc7-32a1701b35d9">
-
-dari hasil diatas disimpulkan bahwa data tidak terjadi duplikasi maka akan dilanjutkan pengecekan missing value pada data.
-
-#### memeriksa missing value
-<img width="203" alt="check_missing_value" src="https://github.com/user-attachments/assets/5e398d76-abf4-423f-b800-d9d0d1744397">
-
-dari hasil diatas disimpulkan bahwa data tidak terdapat missing value pada tiap kolom maka dapat dilakukan tahan Explorasi Data Analysis dan Pemodelan
-
-
-## Exploratory Data Analysis (EDA)
-### Gender Target
-![target_gender](https://github.com/user-attachments/assets/133f93dd-70c0-4911-b329-17e3c67eddbe)
-<br>
-berdasarkan diagram diatas dijelaskan bahwa perusahaan skincare membuat produk untuk segmen pertama pada konsumen pria dengan angka 33.4%, segmen kedua pada produk untuk segmen kedua pada perempuan dengan angka 33.3%, dan segmen ketiga pada unisex 33.2%. Hal ini karena pria sudah mulai sadar pentingnya penggunaan skincare dan memiliki peluang yang baik dan masi sedikit produk skincare untuk pria dibandingkan skincare perempuan.
+Nama     : Najwar Putra Kusumah Wardana
+
+Dataset  : https://www.kaggle.com/datasets/abhikjha/movielens-100k
+
+# 🔖 Proyek Overview
+Dalam era digital saat ini, industri hiburan mengalami lonjakan konten yang luar biasa cepat. Salah satu bentuk konten yang paling digemari masyarakat adalah film. Platform streaming seperti Netflix, Disney+, dan Amazon Prime menyuguhkan ribuan judul film dari berbagai genre setiap harinya. Namun, kelimpahan pilihan ini justru sering membuat pengguna kebingungan dalam menentukan film apa yang layak ditonton selanjutnya.
+
+Di sinilah sistem rekomendasi berperan penting. Dengan memberikan saran film yang relevan dan sesuai dengan preferensi pengguna, sistem ini dapat meningkatkan pengalaman pengguna, menghemat waktu, dan mendorong eksplorasi konten baru. Salah satu pendekatan umum yang digunakan adalah Content-Based Filtering, yaitu merekomendasikan film berdasarkan kesamaan karakteristik konten seperti genre, sinopsis, atau kata kunci.
+
+Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis konten menggunakan dataset MovieLens 100K, yang merupakan dataset populer dalam riset sistem rekomendasi. Dataset ini menyediakan informasi mengenai ribuan film beserta metadata-nya seperti genre, serta interaksi rating dari pengguna. Dengan pendekatan ini, sistem rekomendasi akan mampu menyarankan film-film yang memiliki kemiripan dengan film yang disukai oleh pengguna sebelumnya.
+
+# 📊 Business Understanding
+## 🚨 Problem Statements
+1. Pengguna sering merasa kebingungan dalam memilih film dari ribuan pilihan yang tersedia.
+2. Banyak pengguna kehilangan ketertarikan terhadap platform karena rekomendasi film yang ditampilkan kurang relevan dengan preferensi mereka.
+3. Tidak semua pengguna memberikan rating atau review, sehingga dibutuhkan metode yang dapat bekerja meskipun data pengguna terbatas.
+
+## 🎯 Goals
+1. Membantu pengguna menemukan film yang relevan dengan preferensi mereka secara otomatis.
+2. Meningkatkan keterlibatan pengguna dengan sistem melalui rekomendasi yang lebih personal.
+3. Membangun sistem yang tetap dapat memberikan rekomendasi meskipun tanpa data interaksi pengguna (misalnya rating), dengan hanya memanfaatkan informasi dari film itu sendiri.
+
+## 💡 Solution Approach
+1. Menerapkan Content-Based Filtering, yaitu merekomendasikan film berdasarkan kesamaan konten (genre).
+2. Menggunakan teknik TF-IDF Vectorization untuk mengekstraksi representasi fitur dari genre film.
+3. Menghitung kemiripan antar film dengan Cosine Similarity untuk menghasilkan daftar rekomendasi.
+4. Mengevaluasi hasil rekomendasi dengan metode manual dan contoh nyata (studi kasus pengguna yang menyukai satu film, sistem menyarankan film-film serupa).
+
+# 📝 Data Understanding
+## ✅ Mengimport Library
+### Built-in Libraries
+- import os
+- import re
+- import shutil
+- import zipfile
+- import textwrap
+
+### Data Manipulation & Analysis
+- import numpy as np
+- import pandas as pd
+
+### Visualization
+- import seaborn as sns
+- import matplotlib.pyplot as plt
+
+### TensorFlow & Keras (Deep Learning)
+- import tensorflow as tf
+- from tensorflow import keras
+- from tensorflow.keras import layers
+
+### Feature Extraction & Similarity
+- from sklearn.feature_extraction.text import TfidfVectorizer
+- from sklearn.metrics.pairwise import cosine_similarity
+
+### Evaluation Metrics
+- from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, classification_report
+
+## 🚀 Data Loading
+# Masukkan ss_dl
+
+### 📌 Penjelasan Kode:
+- pd.read_csv(...) digunakan untuk membaca file CSV ke dalam DataFrame.
+- os.path.join(...) memastikan path yang digunakan fleksibel dan kompatibel di berbagai sistem operasi.
+- print(df.head()) menampilkan 5 baris pertama dari dataset.
+---
+
+### 📌 Deskripsi Kolom:
+- movieId : ID unik untuk setiap film.
+- title : Nama film beserta tahun rilisnya.
+- genres : Genre film yang dipisahkan dengan tanda | (pipe).
+
+## 🧩 Penggabungan Datasets
+# masukkan ss_mixdf
+
+### 🧾 Penjelasan Kolom dalam Data Gabungan (df_merged)
+Setelah kita gabungkan data ratings.csv dan movies.csv, kita punya beberapa kolom penting, yaitu:
+| Kolom         | Penjelasan                                                                                                                                           |
+|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **userId**    | ID pengguna yang memberikan rating. Tiap user punya ID unik, misalnya `1`, `2`, dst.                                                                 |
+| **movieId**   | ID film yang dirujuk oleh pengguna. Ini juga jadi kunci untuk menghubungkan data antar tabel.                                                        |
+| **rating**    | Nilai rating yang diberikan pengguna ke film, biasanya dalam skala 0.5 – 5.0.                                                                        |
+| **timestamp** | Waktu saat rating diberikan, dalam format Unix timestamp (jumlah detik sejak 1 Januari 1970). Bisa dikonversi jadi tanggal kalau mau analisis waktu. |
+| **title**     | Judul lengkap dari film, biasanya disertai dengan tahun rilis, misalnya `Toy Story (1995)`.                                                          |
+| **genres**    | Genre dari film tersebut, bisa terdiri dari satu atau lebih genre, misalnya `Comedy`, `Action Thriller`, dll.                                        |
+---
+
+### 🚨 Ini Penting!
+Dengan kolom-kolom ini, kita bisa melakukan berbagai analisis menarik, misalnya:
+- Film paling sering diberi rating tinggi.
+- Genre favorit user tertentu.
+- Perubahan selera user dari waktu ke waktu (kalau kita ubah timestamp ke format tanggal).
+- Rekomendasi film berdasarkan genre atau rating tertinggi.
+
+## Deskripsi Type Data Pada Variabel
+# ss_typed
+### 📌 Penjelasan:
+- <class 'pandas.core.frame.DataFrame'>: Menunjukkan bahwa objek ini adalah sebuah DataFrame dari pustaka pandas.
+- RangeIndex: Menandakan jumlah total baris adalah 100.836, dengan indeks mulai dari 0 sampai 100.835.
+- Kolom-kolom dan Tipe Datanya:
+
+| Kolom       | Non-Null Count | Tipe Data | Penjelasan                                                                        |
+| ----------- | -------------- | --------- | --------------------------------------------------------------------------------- |
+| `userId`    | 100836         | `int64`   | ID pengguna. Semua baris memiliki nilai, tidak ada missing data.                  |
+| `movieId`   | 100836         | `int64`   | ID film. Sama seperti `userId`, tidak ada nilai kosong.                           |
+| `rating`    | 100836         | `float64` | Rating yang diberikan pengguna, berupa angka desimal.                             |
+| `timestamp` | 100836         | `int64`   | Waktu saat rating diberikan dalam format Unix timestamp.                          |
+| `title`     | 100836         | `object`  | Judul film (tipe data `object` berarti ini berupa teks/string).                   |
+| `genres`    | 100836         | `object`  | Genre film, juga berupa teks yang berisi satu atau lebih genre.                   |
+
+- dtypes: Merinci jenis tipe data yang digunakan: 1 kolom float64, 3 kolom int64, dan 2 kolom object.
+- memory usage: Menunjukkan jumlah memori yang digunakan oleh DataFrame ini di RAM, yaitu sekitar 4,6 megabyte.
+
+## Jumlah Data
+# ss_row
+### 🔢 Jumlah Baris dan Kolom
+1. Total Baris (Rows): 100.836
+   - Artinya, dataset ini memiliki 100.836 entri atau data rating individual yang diberikan oleh berbagai pengguna terhadap berbagai film.
+2. Total Kolom (Columns): 6
+   - Dataset ini terdiri dari 6 kolom, yaitu:
+       - userId – ID pengguna yang memberikan rating
+       - movieId – ID film yang diberi rating
+       - rating – Nilai rating yang diberikan
+       - timestamp – Waktu saat rating diberikan (dalam Unix time)
+       - title – Judul film
+       - genres – Genre film
+---
+### 🧠 Kesimpulan:
+- Dataset ini cukup besar dan lengkap, cocok untuk dilakukan eksplorasi data seperti:
+- Mengetahui genre yang paling sering ditonton
+- Film dengan rating tertinggi
+- Aktivitas pengguna berdasarkan waktu
+
+## Deskripsi Data
+# ss_des
+#### 📊 Statistik Deskriptif
+Fungsi describe() memberikan ringkasan statistik untuk kolom numerik dalam dataset. Berikut penjelasannya untuk masing-masing kolom:
+
+| Kolom         | Penjelasan Singkat                                                                                                                                                               |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **userId**    | ID unik pengguna. Total pengguna adalah 610 (dari min=1 hingga max=610), dengan nilai rata-rata 326.                                                                             |
+| **movieId**   | ID film. Film memiliki ID dari 1 hingga 193609, meskipun jumlah film unik biasanya lebih kecil karena ada ID yang tidak terpakai.                                                |
+| **rating**    | Rating yang diberikan oleh pengguna, mulai dari **0.5 (min)** hingga **5.0 (max)**, dengan rata-rata sekitar **3.50**. Ini menunjukkan kebanyakan rating berada di tengah (3-4). |
+| **timestamp** | Waktu saat rating diberikan, dalam format Unix timestamp (jumlah detik sejak 1 Januari 1970). Perlu dikonversi ke format tanggal agar lebih mudah dibaca.                        |
+
+---
+#### 📚 Rangkuman Statistik:
+
+| Statistik    | userId  | movieId | rating  | timestamp (Unix)                   |
+| ------------ | ------- | ------- | ------- | ---------------------------------- |
+| **count**    | 100,836 | 100,836 | 100,836 | 100,836                            |
+| **mean**     | 326.13  | 19,435  | 3.50    | 1.205.946.000                      |
+| **std**      | 182.62  | 35,531  | 1.04    | 216.261.000                        |
+| **min**      | 1       | 1       | 0.5     | 828.124.600 (sekitar tahun 1996)   |
+| **25% (Q1)** | 177     | 1,199   | 3.0     | 1.019.124.000                      |
+| **50% (Q2)** | 325     | 2,991   | 3.5     | 1.186.087.000                      |
+| **75% (Q3)** | 477     | 8,122   | 4.0     | 1.435.994.000                      |
+| **max**      | 610     | 193,609 | 5.0     | 1.537.799.000 (sekitar tahun 2018) |
+
+## 🎯 Insight dari Data Understanding
+1. Volume dan Kelengkapan Data
+- Dataset terdiri dari 100.836 baris dan 6 kolom, dengan tidak ada missing value — artinya data bersih dan siap dianalisis.
+- Kolom-kolomnya menggabungkan informasi penting:
+    - siapa yang menonton
+    - film apa yang ditonton
+    - rating-nya, kapan menontonnya
+    - serta genre film.
+
+2. Distribusi Rating
+- Rata-rata rating yang diberikan pengguna adalah 3.50 (dari skala 0.5 sampai 5).
+- Mayoritas rating berada di rentang 3.0 – 4.0, menunjukkan kecenderungan pengguna memberi nilai yang cukup positif, tapi tidak ekstrem.
+
+3. Pengguna dan Film
+- Memiliki 610 pengguna unik (userId dari 1 hingga 610).
+- Kolom `movieId` berkisar dari 1 hingga 193.609, namun angka ini tidak menunjukkan jumlah film sebenarnya karena banyak ID tidak terpakai.
+
+4. Genre Film
+Setiap film bisa memiliki satu atau lebih genre, yang memungkinkan kita melakukan analisis genre populer, genre dengan rating tertinggi, dll.
+
+5. Waktu Pemberian Rating
+Kolom timestamp menunjukkan data mencakup periode panjang (sekitar 1996–2018), sehingga memungkinkan analisis tren rating dari waktu ke waktu (misalnya: apakah pengguna makin kritis seiring waktu?).
+
+---
+### 💡 Kesimpulan
+- Dataset ini cukup lengkap dan bersih untuk langsung dilakukan exploratory data analysis (EDA) dan modeling seperti sistem rekomendasi.
+- Kita bisa melanjutkan ke analisis lebih dalam seperti:
+    - Film atau genre dengan rating tertinggi.
+    - Perilaku user tertentu dalam memberi rating.
+    - Pola rating berdasarkan tahun/genre.
+
+# 🧼 Data Cleaning
+## 📑 Duplikasi Data
+
+# ss_dup
+
+Dalam dataset ini tidak ditemukan adanya duplikasi data.
+
+## 🆘 Missing Value
+
+# ss_mis
+
+Dalam dataset ini tidak ditemukan adanya missing value.
+
+# Exploratory Data  Analysis (EDA)
+## Memisahkan Kolom Genre
+
+# ss_gen
+
+### 🧩 Penjelasan Kode:
+1. `df_merged['genres_split'] = df_merged['genres'].str.split('|'): `
+Membagi kolom genres menjadi list genre, karena beberapa film memiliki lebih dari satu genre.
+
+2. `genres_exploded = df_merged.explode('genres_split'): `
+Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehingga satu film dengan 3 genre akan muncul 3 kali (satu per genre).
+
+## Grafik Distribusi Jumlah Film per Genre
+
+# eda_1
+
+### 🧩 Penjelasan Kode:
+`sns.countplot(..., y='genres_split', order=..., palette='viridis'): `
+- Menggunakan countplot untuk menghitung dan memvisualisasikan jumlah film per genre.
+- Parameter order digunakan agar genre ditampilkan dari jumlah terbanyak ke paling sedikit.
+- Palet viridis memberikan warna gradasi yang menarik.
+
+### 📌 Insight dari Grafik:
+1. Genre paling umum dalam dataset adalah:
+   - Drama: Lebih dari 40.000 film.
+   - Comedy: Berada pada ujung akhir frekuensi 35.000 film, sekitar 37.000 - 39.000 film.
+   - Action: Berada pada awal frekuensi 30.000 film, sekitar 30.000 - 33.000 film. 
+   - Thriller: Berada pada awal frekuensi 25.000 film, sekitar 25.000 - 27.000 film.
+   - Adventure: Berada pada ujung frekuensi 20.000 film, sekitar 23.000 - 24.000 film.
+
+2. Genre dengan jumlah film paling sedikit:
+   - Film-Noir, Documentary, dan (no genres listed) adalah genre dengan jumlah film paling sedikit.
+   - (no genres listed) artinya ada film yang tidak memiliki informasi genre.
+
+### 💡 Kesimpulan:
+- Sebagian besar film dalam dataset ini bergenre Drama dan Comedy, menunjukkan bahwa kedua genre ini paling populer atau paling banyak diproduksi.
+- Genre seperti War, IMAX, dan Film-Noir tergolong niche (khusus), sehingga cocok jika ingin eksplorasi selera pengguna unik.
+- Visualisasi ini sangat berguna untuk analisis preferensi genre, baik secara umum maupun per user nanti.
+
+## Distribusi Panjang Judul Film
+
+# eda_2
+
+### 📌 Insight dari Grafik:
+- Sebagian besar judul film memiliki panjang antara 15 hingga 30 karakter.
+- Distribusi bersifat right-skewed (miring ke kanan), artinya:
+  - Mayoritas judul film pendek atau sedang.
+  - Hanya sedikit judul film yang sangat panjang (di atas 60 karakter).
+
+---
+### 💡 Kesimpulan:
+- Judul film dalam dataset umumnya ringkas, yang kemungkinan mencerminkan praktik umum industri film agar judul mudah diingat.
+- Panjang judul film bisa menjadi fitur menarik untuk analisis lebih lanjut, misalnya:
+  - Apakah judul yang lebih panjang cenderung mendapat rating lebih rendah/tinggi?
+  - Apakah genre tertentu cenderung memiliki judul yang lebih panjang?
+
+## Korelasi Antar Fitur Numerik
+
+# eda_kor
+
+#### 🎯 Tujuan:
+Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom numerik dalam dataset gabungan df_merged.
+
+---
+#### 📌 Interpretasi Heatmap:
+| Kolom                      | Korelasi yang Terlihat      | Penjelasan Singkat                                                                                  |
+| -------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------- |
+| **userId & rating**        | -0.05 (lemah negatif)       | Tidak ada hubungan kuat antara user ID dan rating yang diberikan.                                   |
+| **movieId & timestamp**    | **0.50 (moderat positif)**  | Film dengan ID lebih besar (film lebih baru) cenderung mendapatkan rating di waktu yang lebih baru. |
+| **title\_length & rating** | 0.05 (sangat lemah positif) | Judul panjang tidak terlalu memengaruhi rating yang diberikan.                                      |
+| **timestamp & rating**     | -0.01 (tidak signifikan)    | Waktu pemberian rating tidak terlalu memengaruhi besarnya rating.                                   |
+
+---
+💡 Kesimpulan:
+- Korelasi antar kolom numerik dalam dataset ini cenderung lemah atau tidak signifikan secara statistik.
+- Satu-satunya korelasi yang cukup mencolok adalah antara movieId dan timestamp (0.50), yang masuk akal karena film dengan ID lebih tinggi umumnya lebih baru, dan mendapat rating di waktu yang lebih modern.
+- Korelasi rendah antara rating dengan kolom lain menunjukkan bahwa preferensi pengguna tidak mudah diprediksi hanya dengan fitur numerik sederhana ini.
+
+## Rata-rata Rating dan Total Review per Genre
+
+# eda_avg
+
+### 🎬 Analisis Rating dan Jumlah Review berdasarkan Genre:
+- Visualisasi ini menggambarkan dua hal penting dalam industri film berdasarkan genre:
+    - Rata-rata rating per genre
+    - Total jumlah review per genre
+---
+### 📊 Grafik Kiri – Average Rating per Genre
+- Menampilkan rata-rata rating film berdasarkan genre.
+- Genre dengan rating tertinggi:
+  - Film-Noir, Documentary, War → rata-rata rating mendekati atau di atas 3.8.
+- Genre dengan rating terendah:
+  - Horror, Comedy, Children → mendekati 3.3 - 3.4.
+
+> 👉 Insight: Genre seperti Documentary dan Film-Noir mungkin memiliki audiens yang lebih khusus dan serius, sehingga memberi rating lebih tinggi.
+---
+### 📈 Grafik Kanan – Total Number of Reviews per Genre
+- Menampilkan jumlah total review yang diberikan per genre.
+- Genre dengan jumlah review terbanyak:
+  - Drama, Comedy, dan Action.
+- Genre dengan jumlah review sangat sedikit:
+  - IMAX, Film-Noir, Musical.
+
+> 👉 Insight: Genre populer seperti Drama dan Comedy memang umum disukai, sedangkan genre Musical, Film-Noir, atau Western memiliki pangsa pasar yang lebih kecil.
+---
+### 🎯 Kesimpulan:
+| Genre          | Rata-rata Rating Tinggi | Jumlah Review Tinggi | Catatan                                       |
+| -------------- | ----------------------- | -------------------- | --------------------------------------------- |
+| Film-Noir      | ✅                       | ❌                    | Disukai secara kualitas, tapi jarang ditonton |
+| Drama          | ✅                       | ✅                    | Populer dan dinilai baik                      |
+| Horror         | ❌                       | ⚠️                   | Kurang disukai, tapi cukup sering ditonton    |
+| Documentary    | ✅                       | ❌                    | Disukai oleh niche audiens                    |
+| Comedy, Action | ⚠️                      | ✅                    | Populer, tapi rating relatif rendah           |
+
+## Top 10 Genres & Movies
+
+# eda_top10
+
+### 🎯Tujuan:
+Visualisasi ini menyoroti genre dan film dengan kualitas terbaik berdasarkan rata-rata rating tertinggi dari seluruh dataset.
+
+---
+### 📊 Grafik Kiri – Top 10 Genre dengan Rata-Rata Rating Tertinggi
+Menampilkan 10 genre teratas dengan rata-rata rating film tertinggi.
+
+Genre teratas:
+- Film-Noir ⭐ (paling tinggi)
+- War
+- Documentary
+- Crime
+- Drama
+
+> 👉 Insight: Genre-genre seperti Film-Noir, War, dan Documentary meskipun mungkin tidak terlalu populer secara kuantitas, tetapi sangat diapresiasi dari segi kualitas oleh para penonton.
+---
+#### 🎥 Grafik Kanan – Top 10 Film dengan Rata-Rata Rating Tertinggi
+Menampilkan 10 film dengan rating rata-rata paling tinggi dari seluruh dataset.
+
+Semua film di atas memiliki rating hampir sempurna (mendekati 5.0).
+
+- Contoh film:
+- 'Salem's Lot (2004)
+- 12 Angry Men (1997)
+- 12 Chairs (1976)
+- A Perfect Day (2015)
+
+> 👉 Insight: Banyak dari film top ini adalah film klasik atau dokumenter, dan bukan blockbuster komersial. Hal ini mengindikasikan adanya penghargaan tinggi terhadap kualitas narasi, akting, dan pengaruh budaya.
+
+---
+### 📌 Catatan Tambahan
+| Genre/Film Tertinggi | Tipe Data | Rating |
+| -------------------- | --------- | ------ |
+| Film-Noir            | Genre     | ±3.9   |
+| 'Salem's Lot (2004)  | Film      | 5.0    |
+
+
+### 🎯 INSIGHT UTAMA DARI EDA
+1. 🎬 Genre Tertentu Mendapat Rating Lebih Tinggi
+   - Genre seperti Film-Noir, War, dan Documentary memiliki rata-rata rating tertinggi.
+   - Meskipun bukan genre paling populer (dari jumlah review), genre-genre ini menunjukkan bahwa kualitas film di dalamnya lebih dihargai oleh penonton.
+   - Ini menunjukkan adanya segmen pasar khusus yang sangat menghargai film dengan kualitas sinematik, naratif, atau nilai historis tinggi.
+
+> 📌 Implikasi: Jika ingin fokus pada kualitas daripada kuantitas penonton, film bergenre ini patut dipertimbangkan.
+
+---
+2. 👥 Film Populer Tidak Selalu Mendapat Rating Tinggi
+   - Beberapa genre seperti Action, Comedy, atau Sci-Fi, meskipun mungkin lebih populer dari segi jumlah review, memiliki rating rata-rata yang lebih rendah.
+   - Genre-genre tersebut mungkin lebih bersifat menghibur, namun kurang dinilai tinggi dari sisi kualitas oleh reviewer.
+
+> 📌 Implikasi: Populer ≠ Berkualitas (menurut penonton). Penting untuk menyeimbangkan tujuan komersial dan kualitas produksi.
+
+---
+3. 📈 Film-Film Top Punya Rating Hampir Sempurna
+   - Film-film seperti 'Salem's Lot (2004) atau 12 Angry Men (1997) memiliki rating hampir sempurna (5.0).
+   - Banyak dari film ini adalah film klasik, dokumenter, atau film dengan pendekatan naratif dan sinematik yang kuat.
+
+> 📌 Implikasi: Film berkualitas tinggi yang kuat di aspek cerita dan akting bisa mempertahankan rating tinggi dalam jangka panjang.
+
+---
+4. 💬 Distribusi Review Tidak Merata antar Genre
+   - Genre seperti Drama dan Comedy mendapatkan jumlah review yang sangat tinggi, namun tidak selalu menghasilkan rating tinggi.
+   - Sebaliknya, genre seperti Film-Noir atau War memiliki jumlah review lebih sedikit tetapi rating sangat tinggi.
+
+> 📌 Implikasi: Genre-genre yang lebih niche memiliki komunitas kecil tapi sangat loyal dan kritis.
+
+---
+5. 🔍 Multigenre Penting untuk Diperhitungkan
+   - Karena kamu melakukan .str.split('|') dan .explode(), maka terlihat bahwa satu film bisa memiliki lebih dari satu genre.
+   - Genre campuran dapat mempengaruhi persepsi rating (misalnya: Drama + War vs Drama + Romance).
+
+> 📌 Implikasi: Saat mengklasifikasikan film atau merekomendasikan, pertimbangkan komposisi genre campuran, bukan hanya satu label utama.
+
+---
+6. 📊 Kesenjangan antara Jumlah Review dan Rating
+   - Ada genre dengan review terbanyak (misalnya Drama atau Action) tapi rating tidak tinggi.
+   - Ini bisa menunjukkan bahwa semakin banyak penonton, semakin besar variasi preferensi dan kritik (fenomena umum dalam film blockbuster).
+
+> 📌 Implikasi: Film mainstream cenderung mendapatkan opini yang lebih beragam — strategi promosi & target audiens harus memperhitungkan hal ini.
+
+
+# Modelling 
+## Content Based Filtering
+> Teknik sistem rekomendasi yang menyarankan item kepada pengguna berdasarkan kesamaan antara konten item tersebut dan preferensi masa lalu pengguna . Ia menganalisis atribut item (seperti genre, kata kunci, atau tag) dan aktivitas pengguna (seperti item yang mereka sukai, beri peringkat, atau beli) untuk membangun profil pengguna dan merekomendasikan item serupa.
+## A. Data Preparation
+
+## Membuat `Dataset_Content`
+
+# ss_datacontent
+
+### 🎯 Tujuan Utama Kode
+Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fitur-fitur deskriptif dari film, seperti:
+- title, genres, rating
+- genres_split sebagai genre yang sudah dipisah-pisah
+- title_length sebagai fitur numerik tambahan
+- movie_label untuk pelabelan yang lebih informatif
+- content_features sebagai gabungan genre dan panjang judul — siap untuk digunakan sebagai fitur konten (misal: TF-IDF, CountVectorizer, dll)
+
+---
+### 🧩 Penjelasan Baris per Baris
+1. Mengambil kolom penting
+
+*Kode:*
+**`dataset_content = df_merged[['movieId', 'title', 'genres','rating', 'genres_split', 'title_length']].drop_duplicates('movieId').reset_index(drop=True)`**
+- Ambil kolom penting untuk analisis konten.
+- drop_duplicates('movieId'): pastikan hanya satu film unik per baris.
+- reset_index(drop=True): reset index setelah deduplikasi.
+
+2. Membuat kolom `movie_label`
+
+*Kode:* 
+**`dataset_content["movie_label"] = dataset_content["title"] + " (" + dataset_content["genres"].astype(str) + ")"`**
+- Buat kolom movie_label berisi gabungan title dan genres.
+- Berguna untuk visualisasi, labeling, atau tampilan dropdown di UI.
+
+3. Membuat Kolom `content_features`
+
+*Kode:*
+**`dataset_content["content_features"] = (
+    dataset_content["genres_split"].apply(lambda x: " ".join(x)) + " " +
+    dataset_content["title_length"].astype(str)
+)`**
+
+- Buat kolom content_features untuk representasi konten tiap film.
+- Gabungan dari:
+  - Genre (dijadikan satu string)
+  - Panjang judul film
+
+---
+### 📊 Isi dataset_content.head()
+| movieId | title                   | genres                               | rating | genres\_split                     | title\_length | movie\_label                                         | content\_features               |
+| ------- | ----------------------- | ------------------------------------ | ------ | --------------------------------- | ------------- | ---------------------------------------------------- | ------------------------------- |
+| 1       | Toy Story (1995)        | \[Adventure, Animation, Children...] | 4.0    | \[Adventure, Animation, Children] | 16            | Toy Story (1995) (\[Adventure, Animation, Children]) | Adventure Animation Children 16 |
+| 3       | Grumpier Old Men (1995) | \[Comedy, Romance]                   | 4.0    | \[Comedy, Romance]                | 23            | Grumpier Old Men (1995) (\[Comedy, Romance])         | Comedy Romance 23               |
+
+---
+### 🎯 Insight & Tujuan
+- Tujuan utama: Menyusun representasi konten tiap film agar bisa dihitung kemiripan antar film (content-based recommendation).
+- Dengan content_features, kamu bisa pakai algoritma seperti cosine similarity untuk menemukan film dengan genre dan struktur judul yang mirip.
+
+## Membuat List Dari Kolom-kolom Penting Pada `dataset_content`
+
+# ss_contentfeatures
+
+### 🎯 Tujuan Kode
+Kode ini bertujuan untuk:
+- Mengambil list dari kolom-kolom penting dalam dataset_content.
+- Memastikan bahwa setiap list memiliki jumlah data yang konsisten (yaitu 9724 film unik).
+- Mengecek dan mencetak jumlah data pada tiap list — ini penting untuk validasi sebelum melanjutkan ke proses pembobotan fitur dan rekomendasi.
+
+---
+### 🧱 Penjelasan Per Baris
+1. Mengubah kolom `title` menjadi list
+
+*Kode:*
+`movie_titles = dataset_content["title"].tolist()`
+- Mengubah kolom title (judul film) menjadi list Python biasa.
+- Berguna untuk menampilkan daftar film atau mencari film berdasarkan judul.
+
+2. Mengubah kolom `movie_label` menjadi list
+
+*Kode:*
+`movie_labels = dataset_content["movie_label"].tolist()`
+- Mengubah kolom movie_label (gabungan title + genres) menjadi list.
+- Sering dipakai untuk tampilan antarmuka (UI), dropdown pilihan, atau visualisasi.
+
+3. Mengubah kolom `content_features` menjadi list
+
+*Kode:*
+`content_features = dataset_content["content_features"].tolist()`
+- Mengubah kolom content_features menjadi list.
+- Ini adalah fitur utama yang nanti akan diolah jadi representasi vektor untuk menghitung kemiripan antar film (misalnya dengan TF-IDF + cosine similarity).
+
+4. Mengecek isi dalam dataset yang telah dikonversi menjadi list
+- `print(f"Terdapat {len(movie_titles)} data judul film")`
+- `print(f"Terdapat {len(movie_labels)} data label film")`
+- `print(f"Terdapat {len(content_features)} data fitur konten (genre + panjang judul)")`
+
+*Output:*
+- Terdapat 9724 data judul film
+- Terdapat 9724 data label film
+- Terdapat 9724 data fitur konten (genre + panjang judul)
+
+---
+### ✅ Kesimpulan & Validasi
+1. Jumlah data film unik adalah 9724, artinya:
+   - Deduplikasi movieId sudah berhasil.
+   - Semua kolom penting (title, movie_label, content_features) sudah lengkap dan sejajar.
+
+2. Siap untuk proses selanjutnya seperti:
+   - TF-IDF Vectorization
+   - Cosine Similarity
+   - Rekomendasi konten berdasarkan kemiripan
+
+## 📦 Membuat Dataset `content_based_data`
+
+# ss_contentbased
+
+Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang akan digunakan sebagai dasar dalam sistem content-based recommendation.
+
+---
+### 📑 Penjelasan Kolom:
+
+| Kolom              | Deskripsi                                                                                                                                                              |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `title`            | Judul asli dari film (misalnya: *Toy Story (1995)*)                                                                                                                    |
+| `movie_label`      | Gabungan antara judul dan genre film, digunakan untuk tampilan atau identifikasi film secara lengkap                                                                   |
+| `content_features` | Gabungan dari **genre film** dan **panjang judul** yang telah disatukan dalam format string, dan digunakan sebagai fitur utama untuk mengukur **kemiripan antar film** |
+
+---
+### ⏏️ Output (5 baris pertama):
+
+| title                       | movie\_label                                                   | content\_features                              |
+| --------------------------- | -------------------------------------------------------------- | ---------------------------------------------- |
+| Toy Story (1995)            | Toy Story (1995) (\['Adventure', 'Animation', ...])            | Adventure Animation Children Comedy Fantasy 16 |
+| Grumpier Old Men (1995)     | Grumpier Old Men (1995) (\['Comedy', 'Romance'])               | Comedy Romance 23                              |
+| Heat (1995)                 | Heat (1995) (\['Action', 'Crime', 'Thriller'])                 | Action Crime Thriller 11                       |
+| Seven (a.k.a. Se7en) (1995) | Seven (a.k.a. Se7en) (1995) (\['Mystery', 'Thriller'])         | Mystery Thriller 27                            |
+| Usual Suspects, The (1995)  | Usual Suspects, The (1995) (\['Crime', 'Mystery', 'Thriller']) | Crime Mystery Thriller 26                      |
+
+---
+### 🎯 Tujuan:
+- Data ini nantinya akan diubah menjadi representasi vektor menggunakan TF-IDF (Term Frequency-Inverse Document Frequency) atau metode serupa, lalu digunakan untuk menghitung kemiripan antar film berdasarkan kontennya (genre + panjang judul).
+- Dengan data ini, kita bisa membangun sistem rekomendasi yang menjawab:
+> "Jika pengguna menyukai film X, film apa yang mirip dari segi kontennya?"
+
+## 📐 Penerapan TF-IDF dan Cosine Similarity
+
+# ss_penerapanconsine
+
+1. 📚 Penjelasan
+
+| Langkah                  | Penjelasan                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TfidfVectorizer()`      | Membuat objek untuk mengubah teks menjadi vektor numerik berbasis frekuensi dan kekhasan kata (TF-IDF).                                               |
+| `fit_transform(...)`     | Menerapkan TF-IDF pada kolom `content_features`, menghasilkan matriks numerik berdimensi `(9724, fitur unik)`.                                        |
+| `cosine_similarity(...)` | Menghitung kemiripan (cosine similarity) antar semua film berdasarkan vektor kontennya. Hasilnya adalah **matriks simetri** berukuran `(9724, 9724)`. |
+
+---
+2. 📏 Hasil:
+`Cosine similarity matrix shape: (9724, 9724)`
+
+Artinya:
+- Kita memiliki 9724 film unik.
+- Matriks ini menunjukkan tingkat kemiripan antar setiap pasang film.
+- Nilai kemiripan berkisar antara 0 (tidak mirip) hingga 1 (sangat mirip).
+
+## 📊 Matriks Cosine Similarity
+
+# ss_matrixconsine
+
+### 🧩 Tujuan:
+Matriks ini akan digunakan untuk membuat sistem rekomendasi, dengan cara memilih film yang memiliki nilai cosine similarity tertinggi terhadap film yang dipilih pengguna.
+
+---
+### 🎯 Penjelasan:
+- Matriks cosine similarity berukuran (9724, 9724).
+- Setiap baris dan kolom merepresentasikan satu film.
+- Nilai dalam matriks menunjukkan tingkat kemiripan antara dua film berdasarkan fitur kontennya (genre dan panjang judul).
+
+---
+### 📌 Arti Nilai:
+- Nilai 0.0 artinya tidak ada kemiripan antara dua film.
+- Nilai 0.37, 0.42, dan 0.45 menunjukkan bahwa film di baris tersebut cukup mirip dengan film lain (nilai mendekati 1 berarti sangat mirip).
+- Diagonal utama (yang tidak ditampilkan di sini) selalu bernilai 1.0 karena setiap film pasti 100% mirip dengan dirinya sendiri.
+
+---
+### 📦 Contoh:
+Jika cosine_sim[2, 8745] = 0.37278331, maka:
+- Film ke-3 dan film ke-8746 memiliki kemiripan konten sebesar ~37.3%.
+- Ini bisa jadi karena mereka memiliki genre yang sama atau panjang judul yang mirip.
+
+## Mengubah TF-IDF Matrix Menjadi Dataframe
+
+# ss_ubahtfidf
+
+### 💡 Tujuan:
+- Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
+- Berguna untuk mengecek atau men-debug nilai TF-IDF tiap film secara manual.
+- Bisa juga dipakai untuk visualisasi atau analisis fitur konten lebih lanjut (misalnya: genre mana yang paling banyak muncul atau paling kuat bobotnya di film tertentu).
+
+---
+### 📚 Penjelasan:
+
+| Komponen                                  | Penjelasan                                                                                                                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tfidf_matrix`                            | Matriks hasil transformasi `TfidfVectorizer`, berisi bobot TF-IDF dari setiap fitur (genre + panjang judul) untuk tiap film.                                                      |
+| `.todense()`                              | Mengubah sparse matrix menjadi dense (matriks penuh), agar bisa dibaca sebagai tabel.                                                                                             |
+| `tfidf.get_feature_names_out()`           | Mengambil semua **fitur** (kata-kata unik dari `content_features`, misalnya: `Action`, `Comedy`, `Thriller`, `16`, dll) yang dipakai dalam TF-IDF. Ini akan jadi kolom DataFrame. |
+| `index=content_based_data["movie_label"]` | Menjadikan **label film** sebagai indeks baris (row) dari DataFrame. Setiap baris mewakili satu film.                                                                             |
+
+---
+
+### ✅ Kesimpulan:
+tfidf_df akan menjadi DataFrame dengan:
+- Rows: Nama-nama film (movie_label)
+- Columns: Fitur konten unik (genre + panjang judul)
+- Values: Nilai bobot TF-IDF (semakin tinggi → kata tersebut penting bagi film itu)
+
+## B. Consine Similarity
+
+### 📌 Apa Itu cosine_similarity?
+`cosine_similarity` menghitung kemiripan antara dua vektor berdasarkan sudut di antara mereka, dengan nilai antara:
+- 1.0 → dua item identik
+- 0.0 → dua item tidak mirip sama sekali
+
+Semakin tinggi nilainya, semakin mirip dua film tersebut dari segi konten (genre + panjang judul).
+
+---
+### 🎯 Kegunaan Matriks Ini:
+- Untuk sistem rekomendasi berbasis konten (Content-Based Filtering).
+- Saat user menyukai film tertentu (misalnya film ke-0), kita bisa ambil film lain yang punya nilai similarity tertinggi terhadap film tersebut.
+
+# ss_consinemain
+
+---
+### 🧮 Penjelasan Matriks Hasil:
+Matriks cosine_sim adalah matriks simetris berukuran (9724, 9724), karena membandingkan setiap film dengan semua film lainnya, termasuk dirinya sendiri.
+
+Misalnya:
+- cosine_sim[0][0] = 1.0 → film ke-0 dibanding dengan dirinya sendiri (selalu 1).
+- cosine_sim[0][1] = 0.08528593 → film ke-0 dan film ke-1 miripnya 8.5% secara konten.
+- cosine_sim[2][973] = 0.31919541 → film ke-2 dan film ke-973 memiliki tingkat kemiripan 31.9%.
+- Banyak nilai 0.0 karena genre atau panjang judul tidak sama → tidak mirip.
+
+---
+### 📝 Kesimpulan:
+Matriks cosine_sim berisi skor kemiripan antar film berdasarkan fitur konten (genre + panjang judul) yang telah diubah ke bentuk TF-IDF. Dan ini adalah dasar utama untuk membangun sistem rekomendasi film otomatis berbasis konten.
+
+## ⚙️ Penerapan Consine Similarity
+
+# ss_consinesubmain
+
+### 🎯 Tujuan:
+-  untuk membuat sistem rekomendasi film.
+-  Ketika user memilih 1 film, kita bisa:
+  - Ambil baris dari cosine_sim_df
+  - Urutkan film yang paling mirip
+  - Rekomendasikan 5–10 film teratas
+
+---
+### 📌 Penjelasan Setiap Bagian:
+1. cosine_sim = cosine_similarity(tfidf_matrix)
+- Menghitung kemiripan (cosine similarity) antar semua film berdasarkan content_features (genre + panjang judul).
+- Output: array (9724, 9724) berisi nilai kemiripan antara semua kombinasi film.
+
+2. cosine_sim_df = pd.DataFrame(...)
+- Membuat DataFrame kemiripan antar film dengan:
+    - Index = nama lengkap film (movie_label)
+    - Kolom = juga nama lengkap film
+- Hasilnya:
+
+| movie\_label ↓ | Film A | Film B | Film C | ... |
+| -------------- | ------ | ------ | ------ | --- |
+| Film A         | 1.0    | 0.23   | 0.0    | ... |
+| Film B         | 0.23   | 1.0    | 0.09   | ... |
+| Film C         | 0.0    | 0.09   | 1.0    | ... |
+
+3. cosine_sim_df.sample(5, axis=1).sample(15, axis=0)
+- Menampilkan 5 kolom acak (film) dan 15 baris acak (film).
+- Tujuannya untuk melihat cuplikan dari matriks kemiripan tanpa menampilkan semuanya.
+- Output:
+
+|movie\_label ↓       | Strictly Sexual | Firefox | Computer Wore Tennis Shoes | Rise of the Planet of the Apes | Zombie Strippers |
+| -------------------- | --------------- | ------- | -------------------------- | ------------------------------ | ---------------- |
+| Swimming with Sharks | 0.238           | 0.0     | 0.106                      | 0.075                          | 0.126            |
+| Highway 61           | 0.154           | 0.0     | 0.126                      | 0.0                            | 0.151            |
+| Days of Thunder      | 0.837           | 0.163   | 0.0                        | 0.214                          | 0.0              |
+
+- Penjelasan:
+  - Semua nilai berkisar antara 0 - 1:
+  - 1.0 → identik (film dengan dirinya sendiri).
+    > 0.5 → cukup mirip dari sisi genre dan panjang judul.
+  - 0.0 → tidak ada kemiripan (tidak ada kata/fitur yang sama di TF-IDF-nya).
+
+> Contoh: Days of Thunder punya similarity tinggi (0.837) dengan Strictly Sexual, berarti mereka punya genre atau panjang judul yang sangat mirip.
+
+## 🧠 Membuat Fungsi `content_based_movie_recommendations`
+
+# ss_systemreq
+
+### 🎯 Tujuan:
+Memberikan rekomendasi film berdasarkan konten (genre + panjang judul) menggunakan cosine similarity.
+
+---
+### 🔍 Penjelasan Setiap Baris:
+1. 🟩 match = items[items["title"].str.lower() == title.lower()]
+- Mencari judul film yang cocok dari parameter title.
+- .str.lower() untuk menghindari perbedaan huruf kapital saat mencocokkan.
+
+2. 🟥 if match.empty: return ...
+Jika judul tidak ditemukan dalam data, maka fungsi akan mengembalikan pesan error.
+
+3. 🟦 movie_label = match.iloc[0]["movie_label"]
+- Mengambil label lengkap dari film yang ditemukan.
+- Label ini digunakan untuk mengambil skor kemiripan dari cosine_sim_df.
+
+4. 🟧 sim_scores = similarity_data[movie_label].sort_values(ascending=False)
+- Mengambil seluruh nilai similarity dari film tersebut ke semua film lain.
+- Diurutkan dari paling mirip ke paling tidak mirip (nilai cosine tertinggi ke rendah).
+
+5. 🟨 top_indices = sim_scores.iloc[1:k+1].index
+- Mengambil k film paling mirip.
+- iloc[1:k+1] artinya mulai dari indeks ke-1 agar tidak mengambil film itu sendiri (indeks ke-0 = film itu sendiri, similarity-nya pasti 1.0).
+
+6. 🟫 return items[items["movie_label"].isin(top_indices)].reset_index(drop=True)
+- Mengembalikan k film yang paling mirip berdasarkan movie_label.
+- reset_index(drop=True) agar indeks rapi saat ditampilkan.
+---
+### 📚 Ringkasan Fungsi
+
+| Komponen             | Fungsi                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| **title**            | Judul film yang dimasukkan user                              |
+| **similarity\_data** | Matriks cosine similarity antar film                         |
+| **items**            | Dataset yang memuat info film dan fitur kontennya            |
+| **k**                | Jumlah film rekomendasi yang ingin ditampilkan (default: 10) |
+
+## 🔎 Contoh Pencarian Dataset Content
+
+# ss_pencariandataset
+
+### 🎯 Tujuan:
+Mencari semua film dalam dataset yang judulnya mengandung kata "Toy Story", baik huruf besar maupun kecil (case=False).
+
+--- 
+### ✅ Insight:
+
+| Aspek                | Penjelasan                                                                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Jumlah film**      | Ada **3 film** yang memiliki judul dengan "Toy Story", yaitu seri pertama, kedua, dan ketiga.                                                                                                                         |
+| **Genre**            | Ketiganya memiliki **genre yang identik**, yaitu: `Adventure`, `Animation`, `Children`, `Comedy`, dan `Fantasy`.                                                                                                      |
+| **Rating rata-rata** | Rating-nya relatif **tinggi dan konsisten**, dengan skor **4.0** hingga **4.5**, menunjukkan bahwa film ini sangat disukai pengguna.                                                                                  |
+| **Panjang judul**    | `Toy Story (1995)` memiliki panjang **16 karakter**, sedangkan dua film lainnya **18 karakter**. Ini masuk dalam fitur `title_length`.                                                                                |
+| **Content features** | Ketiganya memiliki `content_features` yang hampir identik (kombinasi genre + panjang judul), sehingga kemungkinan besar akan **saling merekomendasikan** jika digunakan pada sistem **content-based recommendation**. |
+
+
+## 🏃‍♂️ Menjalankan Fungsi `content_based_movie_recommendations()`
+
+# ss_runcbm
+
+### 🎯 Tujuan:
+Fungsi `content_based_movie_recommendations()` mencari film yang paling mirip secara konten (genre dan panjang judul) dengan film "Toy Story (1995)", berdasarkan cosine similarity dari representasi TF-IDF.
+
+---
+### ✅ Insight:
+- Sistem ini belum mempertimbangkan plot cerita, aktor, atau visual, hanya berdasarkan genre dan panjang judul (konten eksplisit).
+- Kalau kamu ingin meningkatkan akurasi rekomendasi, bisa:
+  - Menambahkan sinopsis/overview film
+  - Menambahkan sutradara, pemeran, atau tahun rilis
+  - Menggabungkan metode ini dengan collaborative filtering
+
+## Collaborative-based Filtering
+
+### 📚Apa itu Collaborative Filtering?
+Collaborative Filtering (CF) merekomendasikan item berdasarkan interaksi pengguna lain.
+
+`Pengguna A menyukai Film X dan Y. Jika Pengguna B menyukai X, maka B mungkin akan menyukai Y.`
+
+---
+### 📌 Dua Jenis Umum Collaborative Filtering:
+1. User-Based Filtering
+- Cari pengguna yang mirip (punya selera serupa).
+- Rekomendasikan film yang disukai pengguna-pengguna mirip tersebut.
+
+2. Item-Based Filtering
+- Cari item (film) yang mirip berdasarkan pola rating pengguna.
+- Rekomendasikan film yang mirip dengan film yang pernah disukai user.
+
+## A. Data Preparation
+
+## 🔖 Persiapan `content_features`
+
+# ss_collab
+
+
+### 🎯 Tujuan:
+Mempersiapkan fitur konten (content_features) untuk sistem Content-Based Filtering berdasarkan:
+- Genre film
+- Panjang judul (title_length)
+
+---
+### 📘 Penjelasan Baris per Baris:
+1. *🧩 Kode:* `dataset_filter = dataset_content[['movieId', 'title', 'genres_split', 'title_length', 'rating']].copy()`
 
-### Brand Cruelty Free
-![cruelty_free](https://github.com/user-attachments/assets/bbb6744f-ca43-40cc-a6fd-793cfd9a4599)
-<br>
-berdasarkan gambar diatas diketahui bahwa masih banyak produk skincare yang mengujicoba produk skincare ke sebesar sebesar 50.6%, sedangkan produk skincare yang sudah beralih dari penggunaan media hewan untuk pengujicoba produk dengan kultur sel manusia atau jaringan manusia.
+🎯 Membuat salinan dari dataset yang hanya berisi kolom yang relevan:
+- `movieId`: ID film  
+- `title`: Judul film  
+- `genres_split`: Genre dalam bentuk list  
+- `title_length`: Panjang karakter judul  
+- `rating`: Rating rata-rata film
 
-### Effectiveness of Ingredients on Skin type based on Rating Score
-![efektif_ingredient](https://github.com/user-attachments/assets/20d90f62-a2ea-4b15-a8a5-0fd7b4b8698e)
-<br>
-berasarkan heatmap diatas disimpulkan bahwa:
-1. kulit bertipe `kering` menggunakan skincare umumnya mengandung bahan hylaronic acid.
-2. kulit bertipe `normal` menggunakan skincare umumnya mengandung bahan retinol dan salicylic acid.
-3. kulit bertipe `kombinasi` menggunakan skincare umumnya mengandung bahan glycerin dan shea butter.
-4. kulit bertipe `oily` menggunakan skincare umumnya mengandung shea butter.
-5. kulit bertipe `sensitive` menggunakan skincare umumnya jarang mengandung retinol.
+2. *🧩 Kode:* `dataset_filter['genres_str'] = dataset_filter['genres_split'].apply(lambda x: " ".join(x))`
+
+🎯 Mengubah list genre (['Action', 'Thriller']) menjadi string 'Action Thriller'.
+>Ini diperlukan karena TF-IDF vectorizer tidak bisa bekerja dengan list, tapi bisa dengan string teks.
+
+
+3. *🧩 kode:* `dataset_filter['movie_label'] = dataset_filter['title'] + " (" + dataset_filter['genres_str'] + ")"`
+
+🎯 Membuat label gabungan dari judul film dan genre-nya.  
+Contoh:
+>Toy Story (1995) (Adventure Animation Children Comedy Fantasy)
 
-### Avarage Rating and Number of Reviews by Skin Type
-![avg_rating_and_number_by_skin_type](https://github.com/user-attachments/assets/18f5a9a9-6042-439e-a796-87a640839d01)
-<br>
-penjelasan:
+Ini berguna sebagai *identifier unik* di tabel-tabel hasil rekomendasi nanti.
 
-berdasarkan grafik diatas bahwa pengguna tipe kulit normal menggunakan produk skincare rata-rata memberikan rating baik diatas 3.5 keatas ,sedangkan untuk kulit tipe oily dan tipe sensitif rata-rata memberikan rating dibawah 3.0. Grafik menunjukkan bahwa kulit tipe combination, oily, dan sensitive memiliki kepedulian terhadap kesehatan kulit dilihat dari rata-rata jumlah reviews. Dengan demikian, perusahaan skincare harus saat mengkampayekan dan edukasi produknya mengenai bahan kandungan yang harus sesuai dengan segmen sesuai tipe kulitnya karena kulit tipe combinatian,tipe kulit oily, dan kulit sensitive memiliki potensial menjadi pelanggan yang loyal dilihat dari grafik jumlah reviews jika diberikan produk skincare yang tepat karena dari rating tipe kulit oily dan tipe sensitive rata-rata memberikan rating rendah yang bermakna produk yang dibelinya kurang tepat.
 
-### Product by Country
-![country](https://github.com/user-attachments/assets/70d8131e-2208-4108-8dde-9e7a4a8750ac)
-<br>
-beradasarkan plot diatas dapat disimpulkan bahwa negara yang memproduksi skincare terbanyak pada negara italia, USA, dan Australia yang bermakna banyak brand produk skincare memiliki banyak jenis produk skincare karena memiliki empat musim.
+4. *🧩 Kode:* `dataset_filter['content_features'] = dataset_filter['genres_str'] + " " + dataset_filter['title_length'].astype(str)`
 
+🎯 Fitur konten utama = gabungan genre dan panjang judul.
 
-### Brand and Product Based on Rating
-![brand_product](https://github.com/user-attachments/assets/a1356261-2e4b-4e82-8386-52d1093a8e24)
-<br>
-berdasarkan plot diata dijelaskan bahwa brand memiliki reputasi yang baik ditandai dengan rating diatas rata-rata:
-1. Milk Makeup yang terkenal terbuat dari bahan 100% vegan, 
-2. Laura Mercier.
-3. Hourglass yang merupakan 100% vergan.
+Contoh:
+>"Adventure Animation Children Comedy Fantasy 16"
 
-tiga produk yang memiliki memiliki reputasi yang baik:
-1. Perfect Powder
-2. Divine Cleanser
-3. Magic Powder
+Tujuannya: menggabungkan informasi tekstual (genre) dan fitur numerik (panjang judul) ke dalam satu string — supaya bisa digunakan dalam model TF-IDF + cosine similarity.
 
-disimpulkan bahwa brand dengan reputasi baik oleh produk skincare 100% vegan ,sedangkan produk skincare yang paling disukai oleh responden yaitu powder.
-
-## Data Preparation
-Karena berbeda antara content-based filtering dengan collaborative filtering, maka data preparation dari kedua approach tersebut akan dilakukan secara masing-masing. Teknik Data preparation yang dilakukan terdiri dari:
-- TF-IDF Vectorizer 
-- Encoding Data User Rating
-- Train-test-split Data User Rating
+---
+### 🚨 Ini penting:
+Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, lalu dihitung kesamaannya (cosine similarity) dengan film lain. Semakin mirip genre dan ciri judulnya, semakin besar kemungkinan film itu direkomendasikan.
 
-### 1. Content-Based Filtering
-Untuk content-based filtering, kita akan fokus pada product_name, brand beserta category,skin,ingredient yang sudah disatukan untuk menjadi dasar pembuatan sistem rekomendasi tersebut. Oleh karena itu, dataframe hanya terdiri 4 kolom dari data yang dimiliki:
-* `Product_Name`
-* `Brand`
-* `Brand_Product`
-* `category_ingredient_skin`
+## ⏏️ Menambahkan Kolom `film_id`
 
-Selanjutnya, digunakan TfidfVectorizer() pada kolom kombinasi category, skin type, ingredients untuk menghasilkan output berupa angka antara 0 - 1. Lalu, dibentuk dataframe yang berisi kolom kombinasi category, skin type, ingredients yang telah dilakukan vektorisasi dengan TfidfVectorizer() sebagai kolom dan seluruh nama product brand skincare sebagai barisnya. Hal ini dilakukan karena akan digunakan cosine similarity pada content-based filtering, dimana cosine similarity memerlukan bentuk angka agar dapat dihitung. Contoh dari dataframe dapat dilihat pada tabel berikut.
+# ss_addfilm
 
-| brand_product | acid | aloe | bb | blush | bronzer | butter | cc | cleanser | combination | concealer | ... | retinol | salicylic | sensitive | serum | setting | shadow | shea | spray | vera | vitamin |
-|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|
-| Drunk Elephant-Ultra Face Mask (Blush)	| 0.000000	| 0.000000	| 0.0	| 0.728084	| 0.0	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| ...	| 0.511075	| 0.000000	| 0.456832	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0 |
-|Laura Mercier-Ultra Lipstick (Makeup Remover) |	0.000000	|0.000000|	0.0	|0.000000	| 0.0 |	0.383847	| 0.0 |	0.0	| 0.000000 |	0.0	| ... |	0.000000 |	0.000000	| 0.000000	| 0.000000	| 0.0	| 0.0	| 0.383847	| 0.0	| 0.000000	| 0.0 | 
-| Natasha Denona-Ultra Serum (Highlighter)	| 0.000000	| 0.460628	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| ...	| 0.000000	| 0.000000	| 0.405964	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.460628	| 0.0 |
-| Ilia Beauty-Divine Serum (Face Mask)	| 0.000000	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| ...	| 0.000000	| 0.000000	| 0.000000	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0 | 
-| Charlotte Tilbury-Super Foundation (Highlighter)	| 0.000000	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0 | 	0.0	| 0.000000	| 0.0	| ...	| 0.000000	| 0.000000	| 0.000000	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0 | 
-| ...	| ...	| ...	| ...	| ...| 	...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ...	| ... | 
-| Patrick Ta-Magic Eyeliner (Face Mask)	| 0.000000	| 0.406752	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| ...	| 0.000000	| 0.000000	| 0.358482	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.406752	| 0.0 | 
-| Farsali-Perfect Powder (Serum)	| 0.371885	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0	| 0.0	| 0.000000	| 0.0	| ...	| 0.000000	| 0.483455	| 0.000000	| 0.665253	| 0.0	| 0.0	| 0.000000	| 0.0	| 0.000000	| 0.0| 
+### 📌 Tujuan:
 
-**Mengapa diperlukan Mengubah data kedalam representasi numerik?**
+- Membuat identifier unik (film_id) untuk setiap film berdasarkan:
+    - 3 huruf pertama dari kata pertama pada judul film, dan
+    - index baris dataset.
 
-- Data perlu diubah kedalam representasi numerik karena sistem rekomendasi berbasis konten membutuhkan representasi numerik dari teks atau fitur kategori agar dapat mengukur kemiripan antar-item. Misalnya, dalam rekomendasi skincare, kategori seperti "Oily," "Vitamin C," atau "Serum" diubah menjadi nilai numerik untuk dihitung kemiripannya.
+- Agar film_id bisa digunakan untuk:
+    - Identifier yang ringkas dan unik
+    - Visualisasi data
+    - Sistem rekomendasi
+    - Debugging / filtering cepat
 
-### 2. Collaborative Filtering
-Untuk collaborative filtering, kita juga akan fokus pada user_id, rating beserta category_ingredient_skin dari product skincare tersebut. Berbeda dengan content-based, kita hanya akan mengambil 3 kolom dari data yang dimiliki, yaitu
-* `user_id`
-* `track_name`
-* `Rating`
+---
+### 🔍 Penjelasan Kode:
+- `x.split()[0]`: Mengambil kata pertama dari judul film.
+- `[:3].upper()`: Mengambil 3 huruf pertama dan mengubahnya menjadi huruf kapital.
+- `dataset_filter.index.astype(str)`: Mengubah nilai index menjadi string.
 
-Karena `user_id` dan `track_name` memiliki tipe data string dan unik, maka dilakukan encoding terhadap kedua kolom tersebut, kemudian dibentuk dataframe yang berisi kolom `user_id` yang sudah diencoding, kolom `track_name` yang sudah diencoding, dan `Rating`. Contoh dari dataframe dapat dilihat pada tabel berikut.
+>Contoh:
 
-| No | track | name | Rating |
-|-----|-----|-----|-----|
-| 11499	| 11499	| 6721	| 4.1 | 
-| 6475	| 6475	| 6282	| 1.8 | 
-| 13167	| 13167	| 12418	| 3.1 | 
-| 862	| 862	| 859	| 4.8 | 
+| Judul Film                  | Index | `film_id` |
+| --------------------------- | ----- | --------- |
+| Toy Story (1995)            | 0     | TOY0      |
+| Grumpier Old Men (1995)     | 1     | GRU1      |
+| Heat (1995)                 | 2     | HEA2      |
+| Seven (a.k.a. Se7en) (1995) | 3     | SEV3      |
+| Usual Suspects, The (1995)  | 4     | USU4      |
 
-**Mengapa diperlukan melakukan Encoding data?**
-- Encoding data perlu dilakukan karena pada Collaborative Filtering, model harus belajar dari pola interaksi pengguna terhadap item. Data perlu diubah ke dalam bentuk numerik agar model neural network dapat memprosesnya.
+---
 
+## 🎯 Encoding dan Decoding film_id
+Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritma machine learning biasanya membutuhkan input dalam bentuk angka, bukan string.
 
-Setelah data yang diperlukan telah diencoding, selanjutnya data dibagi menjadi dua, yaitu data training dan data testing untuk pembuatan dan pelatihan model. Data training digunakan untuk melatih model dengan data yang ada, sedangkan data testing digunakan untuk menguji model yang dibuat menggunakan data yang belum dilatih. Pembagian data ini dilakukan dengan perbandingan 80% : 20% untuk data training dan data testing.
+# ss_encodefilm
 
-**Mengapa diperlukan melakukan Train-test-split data?**
+### 🔎 Pemrosesan Kode
+**1. 🔄 Mengambil film_id unik dalam bentuk list**
 
-- Memisahkan data menjadi set pelatihan dan pengujian memungkinkan kita untuk mengevaluasi kinerja model pada data yang tidak pernah dilihat sebelumnya. Ini memberikan gambaran yang lebih akurat tentang seberapa baik model yg kita buat.
+*🧩 Kode:* `film_ids = dataset_filter["film_id"].unique().tolist()`
 
+📌 Tujuan: 
+- Persiapan untuk proses encoding.
+- Mengambil semua nilai film_id unik dari kolom.
+- Mengubahnya menjadi list.
 
-## Modelling and Result
+>🧾 Contoh hasil:
+['TOY0', 'GRU1', 'HEA2', 'SEV3', 'USU4', ...]
 
-### 1. Content-Based Filtering
+**2. 🔢 Encoding: film_id → angka**
 
-Content-based filtering menggunakan cosine similarity sebagai algoritma untuk membuat sistem rekomendasi berdasarkan content-based filtering approach. Cosine similarity mengukur kesamaan antara dua vektor dan menentukan apakah kedua vektor tersebut menunjuk ke arah yang sama. Ia menghitung sudut cosinus antara dua vektor. Semakin kecil sudut cosinus, semakin besar nilai cosine similarity. Cosine similarity dirumuskan sebagai berikut.
+*🧩 Kode:* `film_to_film_encoded = {x: i for i, x in enumerate(film_ids)}`
 
-$$Cos (\theta) = \frac{\sum_1^n a_ib_i}{\sqrt{\sum_1^n a_i^2}\sqrt{\sum_1^n b_i^2}}$$
+📌 Tujuan:
+- Mengubah setiap film_id menjadi angka menggunakan enumerate.
+- Disimpan dalam bentuk dictionary.
+- Format: {'TOY0': 0, 'GRU1': 1, ...}
+- Agar film bisa direpresentasikan dalam format numerik saat diproses oleh model machine learning seperti matrix factorization.
 
-Pada python, kita akan menggunakan  `cosine_similarity` untuk mendapatkan nilai cosinus dua vektor dalam matriks. Cosine similarity memiliki kelebihan seperti output yang ternormalisasi (rentang -1 hingga 1) sehingga memudahkan interpretasi, penggunaan yang mudah dan sederhana, serta efisien untuk data sparse berdimensi tinggi, seperti TF-IDF. Meski demikian, cosine similarity memiliki beberapa kelemahan, seperti menganggap seluruh faktor/parameter sama penting, sensitif terhadap perubahan 'sudut vektor', dan tidak selalu cocok untuk data negatif. Setelah dibentuk sistem rekomendasi, selanjutnya akan diuji sistem rekomendasi ini untuk menampilkan top 10 rekomendasi berdasarkan  yang category, skin type, ingredient oleh user. Diperoleh hasil berikut.
+**3. 🔁 Decoding: angka → film_id**
 
-`content_based_skincare_recommendations('Ilia Beauty-Perfect Powder (Concealer)')`
+*🧩 Kode:* `film_encoded_to_film = {i: x for i, x in enumerate(film_ids)}`
 
-| No | brand_product	| Product_Name	| Brand	| category_ingredient | 
-|---|---|---|---|---| 
-| 0	| Urban Decay-Super Serum (Concealer) | Super Serum	| Urban Decay	| Concealer, Aloe Vera, Sensitive | 
-| 1	| Danessa Myricks-Divine Makeup Remover (Concealer) | 	Divine Makeup Remover	| Danessa Myricks	| Concealer, Aloe Vera, Sensitive |
-| 2	| Tarte-Divine Primer (Concealer)	| Divine Primer| 	Tarte | Concealer, Aloe Vera, Sensitive | 
-| 3	| Tarte-Divine Primer (Concealer)	| Divine Primer	| Tarte	| Concealer, Vitamin C, Oily | 
-| 4| 	Patrick Ta-Divine Highlighter (Concealer)| 	Divine Highlighter | 	Patrick Ta	| Concealer, Aloe Vera,Sensitive | 
-| 5	| Becca-Ultra Bronzer (Concealer)	| Ultra Bronzer	| Becca	| Concealer, Aloe Vera, Sensitive | 
-| 6	| E.l.f.-Divine Exfoliator (Concealer)	| Divine Exfoliator	| E.l.f.	| Concealer, Aloe Vera, Sensitive | 
-| 7	| Becca-Magic Powder (Concealer) | 	Magic Powder	| Becca | Concealer, Aloe Vera, Sensitive| 
-| 8	| Pat McGrath Labs-Super Highlighter (Concealer)	| Super Highlighter	| Pat McGrath Labs	| Concealer, Aloe Vera, Sensitive | 
-| 9	| Ilia Beauty-Ultra Lip Gloss (Concealer) | Ultra Lip Gloss	| Ilia Beauty	| Concealer, Aloe Vera, Sensitive | 
+📌 Tujuan:
+- Setelah model memproses dan menghasilkan prediksi, kamu bisa mengubah angka kembali ke film_id untuk ditampilkan ke pengguna.
+- Membuat mapping kebalikan dari sebelumnya.
+- Format: {0: 'TOY0', 1: 'GRU1', ...}
 
-### 2. Collaborative Filtering
+---
+### ✅ Kesimpulan
+| Langkah                | Tujuan         | Format                  |
+| ---------------------- | -------------- | ----------------------- |
+| `film_ids`             | List unik film | `['TOY0', 'GRU1', ...]` |
+| `film_to_film_encoded` | Encoding       | `{'TOY0': 0, ...}`      |
+| `film_encoded_to_film` | Decoding       | `{0: 'TOY0', ...}`      |
 
-Collaborative Filtering menggunakan deep learning, tepatnya embedding layer untuk membuat model deep learning. Embedding layer merupakan tipe layer pada deep learning yang digunakan untuk mentransformasikan data kategorikal menjadi vektor dengan nilai kontinu. Pada python, kita menggunakan `tensorflow.keras.layers Embedding` untuk membentuk embedding layer. Embedding Layer memiliki kelebihan seperti mengurangi kompleksitas model, dapat digunakan di berbagai macam algoritma deep learning, dan menangkap hubungan semantic pada data. Meski demikian, embedding layer juga memiliki beberapa kelemahan, seperti membutuhkan data yang banyak, sensitif terhadap hyperparameter, dan cold start problem. Setelah model dibentuk dan dilatih, diperoleh hasil `root_mean_squared_error: 0.0695` untuk data training dan `val_root_mean_squared_error:  0.2967` untuk data testing. Nilai tersebut sudah bagus untuk digunakan dalam sistem rekomendasi, sehingga dapat dibentuk sistem rekomendasi berdasarkan model tersebut. Selanjutnya, akan diuji sistem rekomendasi ini untuk menampilkan top 10 rekomendasi skincare berdasarkan  ingredient, skin type, category. Diperoleh hasil berikut.
 
-`recommend_tracks_based_on_track_name('Morphe-Super Setting Spray (Serum)', top_n=10)`
+## 🎬 Encoding dan Decoding movie_label
+Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, karena model membutuhkan data dalam bentuk angka, bukan teks.
 
-Rekomendasi berdasarkan track dengan brand dan produk: 'Morphe-Super Setting Spray (Serum)'\
-10 Rekomendasi skincare yang cocok untuk kamu:
- 1. produk RMS Beauty-Divine Powder (Blush) dengan kategori Blush, Shea Butter, Combination dan rating 5.0
- 2. produk Bobby Brown-Divine Face Oil (Eyeliner) dengan kategori Eyeliner, Vitamin C, Combination dan rating 4.9
- 3. produk Bourjois-Ultra Face Mask (Lip Gloss) dengan kategori Lip Gloss, Shea Butter, Combination dan rating 4.9
- 4. produk Danessa Myricks-Perfect Moisturizer (Powder) dengan kategori Powder, Glycerin, Dry dan rating 4.9
- 5. produk Hourglass-Divine Face Mask (Face Oil) dengan kategori Face Oil, Vitamin C, Normal dan rating 5.0
- 6. produk Huda Beauty-Divine Mascara (Contour) dengan kategori Contour, Glycerin, Sensitive dan rating 4.9
- 7. produk Urban Decay-Perfect Cleanser (Lip Gloss) dengan kategori Lip Gloss, Shea Butter, Oily dan rating 4.8
- 8. produk Perricone MD-Magic Foundation (BB Cream) dengan kategori BB Cream, Vitamin C, Combination dan rating 5.0
- 9. produk Juvia’s Place-Magic Lipstick (Bronzer) dengan kategori Bronzer, Hyaluronic Acid, Dry dan rating 4.8
- 10. produk Farsali-Magic Lipstick (Setting Spray) dengan kategori Setting Spray, Shea Butter, Combination dan rating 5.0
+# ss_encodemovie
 
-## Evaluation
+### 📈 Tahapan Pemrosesan:
+**1. 🔄 Mengubah movie_label menjadi list unik**
 
-### 1. Content-Based Filtering
+*🧩 Kode:* `movie_labels = dataset_filter["movie_label"].unique().tolist()`
 
-Pada content-based filtering, model ini hanya menggunakan metrik Precision untuk mengetahui seberapa baik perforam model tersebut. Presisi adalah metrik yang biasa digunakan untuk mengevaluasi kinerja model pengelompokan. Metrik ini menghitung rasio antara nilai ground truth (nilai sebenarnya) dengan nilai prediksi yang positf. Perhitungan rasio ini dijabarkan melalui rumus di bawah ini:
+- Tujuan:
+    - Mengambil semua nilai unik dari kolom movie_label.
+    - Disimpan sebagai list agar bisa di-enumerate.
 
-$$ Precision = \frac{TP}{TP + FP} $$
+- Contoh isi movie_label:
+>"Toy Story (1995) (Adventure Animation Children Comedy Fantasy)"
 
-Dimana:
+**2. 🔢 Encoding: movie_label → angka**
 
-- TP (*True Positive*), jumlah kejadian positif yang diprediksi dengan benar.
-- FP (*False Positive*), jumlah kejadian positif yang diprediksi dengan salah.
+*🧩 Kode:* `movie_to_encoded = {x: i for i, x in enumerate(movie_labels)}`
 
-Berdasarkan hasil yang terdapat pada tahap Model and Result dapat dilihat bahwasanya besar presisi jika dihitung adalah 9/10 untuk rekomendasi Top-10. Ini menunjukan sistem mampu memberikan rekomendasi sesuai dengan skintype, category, dan ingredient.
 
+- Tujuan:
+  - representasi film dalam bentuk angka supaya bisa diproses model.
+  - Mengubah setiap label film menjadi angka (index).
 
-### 2. Collaborative Filtering
+- Format:
+> {
+  'Toy Story (1995) (...)': 0,
+  'Grumpier Old Men (1995) (...)': 1,
+  ...
+}
 
-Pada collaborative filtering, metrik evaluasi yang digunakan adalah Root Mean Squared Error (RMSE). 
 
-#### Sekilas tentang RMSE
+**3. 🔁 Decoding: angka → movie_label**
 
-Root Mean Squared Error (RMSE) merupakan salah satu metode untuk menghitung error pada pelatihan model dengan cara menghitung jarak rata-rata antara nilai yang diprediksi dengan nilai sesungguhnya. RMSE dirumuskan sebagai berikut.
+*🧩 Kode:* `encoded_to_movie = {i: x for i, x in enumerate(movie_labels)}`
 
-$$RMSE = \sqrt{\frac{\sum_{i=1}^n{(y_i - \hat{y_i})}^2}{N}}$$
+- Tujuan:
+    - agar hasil prediksi berupa angka bisa dikembalikan ke label film asli.
+    - Membalik proses encoding di atas.
 
-Keterangan:
-* $y_i$: Nilai sesungguhnya pada observasi ke-i
-* $\hat{y_i}$: Nilai prediksi pada observasi ke-i
-* $N$: Jumlah observasi
+- Format:
+>{
+  0: 'Toy Story (1995) (...)',
+  1: 'Grumpier Old Men (1995) (...)',
+  ...
+}
 
-Jika nilai prediksi sangat mendekati nilai sesungguhnya, maka nilai dari $(y_i - \hat{y_i})$ akan semakin mengecil. Artinya, semakin kecil nilai dari RSME atau bahkan mendekati nol, maka model yang digunakan telah akurat dan baik.
+---
+### 🔎 Kesimpulan
 
-#### Penerapan Evaluasi Model dengan RMSE
+| Langkah            | Tujuan    | Hasil                                    |
+| ------------------ | --------- | ---------------------------------------- |
+| `movie_labels`     | List unik | `['Toy Story (...)', 'Heat (...)', ...]` |
+| `movie_to_encoded` | Encoding  | `{'Toy Story (...)': 0, ...}`            |
+| `encoded_to_movie` | Decoding  | `{0: 'Toy Story (...)', ...}`            |
 
-Pada collaborative filtering, setelah melatih model sebanyak 60 epoch, diperoleh hasil `RMSE = 0.0695` untuk data training dan `RMSE = 0.2967` untuk data testing. Jika dilihat menggunakan grafik, diperoleh plot sebagai berikut.
+> 📝 Catatan: Encoding ini nantinya akan berguna saat akan membangun model matrix factorization atau neural collaborative filtering, agar input/output model tetap konsisten dalam bentuk numerik.
 
-![matrik_evaluasi](https://github.com/user-attachments/assets/bf2b0aa7-c71c-4a27-abb1-3493b6437eb5)
+## 🔗 Menambahkan Kolom `track` dan `name` ke Dataset
+Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan movie_label ke dalam dataframe dataset_filter, yang akan berguna dalam proses training model berbasis Collaborative Filtering.
 
-Dari gambar tersebut, terlihat bahwa nilai RMSE pada data training selalu menurun, sementara nilai RSME pada data testing awalnya menurun, namun setelah 10 epoch, nilai RSME mulai stagnan. Meski RSME pada data testing lebih besar dari data training, namun karena keduanya telah bernilai sangat mendekati 0, maka model yang digunakan telah baik dan akurat untuk membuat sistem rekomendasi.
+# ss_trackname
 
+### 📑 Tahapan Pemrosesan
+**1. 📌 track → Hasil Encoding dari film_id**
 
-## Kesimpulan
-1. Pria sudah mulai sadar pentingnya penggunaan skincare dan memiliki peluang yang baik dan masi sedikit produk skincare untuk pria dibandingkan skincare perempuan, dibuktikan dengan memiliki nilai pesebaran tertinggi, yaitu 33.4% dan  produk skincare yang sudah beralih dari penggunaan media hewan untuk pengujicoba produk dengan kultur sel manusia atau jaringan manusia semakin meningkat.
-2. Brand skincare dengan reputasi baik oleh produk skincare 100% vegan ,sedangkan produk skincare yang paling disukai oleh responden yaitu powder.
-3. perusahaan skincare harus saat mengkampayekan dan edukasi produknya mengenai bahan kandungan yang harus sesuai dengan segmen sesuai tipe kulitnya karena kulit tipe combinatian tipe kulit oily, dan kulit sensitive memiliki potensial menjadi pelanggan yang loyal dilihat dari grafik jumlah reviews jika diberikan produk skincare yang tepat karena dari rating tipe kulit oily dan tipe sensitive rata-rata memberikan rating rendah yang bermakna produk yang dibelinya kurang tepat. dengan memperhatikan ingredient skincare:
-    * kulit bertipe `kering` menggunakan skincare umumnya mengandung bahan hylaronic acid.
-    * kulit bertipe `normal` menggunakan skincare umumnya mengandung bahan retinol dan salicylic acid.
-    * kulit bertipe `kombinasi` menggunakan skincare umumnya mengandung bahan glycerin dan shea butter.
-    * kulit bertipe `oily` menggunakan skincare umumnya mengandung shea butter.
-    * kulit bertipe `sensitive` menggunakan skincare umumnya jarang mengandung retinol.
-4. Sistem rekomendasi dapat diimplementasikan dengan menggunakan 2 approach, yaitu content-based filtering approach menggunakan cosine similarity dan collaborativer filtering approach menggunakan embedding layer untuk memberikan sistem rekomendasi terbaik.
+*🧩 Kode:* `dataset_filter["track"] = dataset_filter["film_id"].map(film_to_film_encoded)`
 
-## Referensi
+- Tujuan:
+  - Menjadikan setiap film memiliki ID numerik unik untuk pemrosesan machine learning.
+  - Kolom film_id (contoh: TOY0, HEA2, dll.) dipetakan ke angka menggunakan dictionary film_to_film_encoded.
+  - Hasilnya dimasukkan ke kolom baru bernama track.
 
-[[1]](https://jurnal.umsu.ac.id/index.php/MANEGGIO/article/view/17785) F. A. Nasution, "Keputusan Pembelian: Peranan Motivasi persepsi pembelajaran Pembelian Skincare," Maneggio: Jurnal Ilmiah Magister Manajemen, vol. 6, no. 2, pp. 193–202, 2023.
+**2. 📌 name → Hasil Encoding dari movie_label**
 
- [[2]](https://www.jurnal.politeknik-kebumen.ac.id/E-Bis/article/view/668/305) Dinda Dwi Guntari and Prihartono Aksan Halim, “Pengaruh Kualitas dan Desain Produk Terhadap Keputusan Pembelian (Survey pada Produk Envygreen Skincare)”, E-Bis, vol. 5, no. 2, pp. 295-307, Oct. 2021.
+*🧩 Kode:* `dataset_filter["name"] = dataset_filter["movie_label"].map(movie_to_encoded)`
 
-[[3]](https://journal.stieamkop.ac.id/index.php/yume/article/view/1545/992) D. W. Robi'ah and M. Nopiana, "Pengaruh Persepsi Harga dan Kualitas Produk Terhadap Keputusan Pembelian Produk Skincare Avoskin," YUME: Journal of Management, vol. 5, no. 1, pp. 433–441, 2022.
+- Tujuan:
+  - Menghubungkan representasi deskriptif film ke representasi numerik (label yang akan digunakan untuk pelatihan model rekomendasi).
+  - Kolom movie_label (berisi judul film + genre) dipetakan ke angka berdasarkan dictionary movie_to_encoded.
+  - Disimpan dalam kolom baru name.
 
-[[4]](https://ieeexplore.ieee.org/abstract/document/10037471) C. Qalbyassalam, R. F. Rachmadi, and A. Kurniawan, "Skincare Recommender System Using Neural Collaborative Filtering with Implicit Rating," in Proc. 2022 Int. Conf. Computer Engineering, Network, and Intelligent Multimedia (CENIM), Surabaya, Indonesia, 2022, pp. 272–277, doi: 10.1109/CENIM56801.2022.10037471.
+---
+### 🎯 Hasil Tahapan:
+| title            | film\_id | movie\_label                    | track | name |
+| ---------------- | -------- | ------------------------------- | ----- | ---- |
+| Toy Story (1995) | TOY0     | Toy Story (1995) (Adventure...) | 0     | 0    |
+| Heat (1995)      | HEA2     | Heat (1995) (Action Crime...)   | 2     | 2    |
+> 🔄 Kolom track dan name mungkin tampak mirip, tapi dibuat dari field yang berbeda: film_id dan movie_label.
 
-[[5]](https://ejournal.umm.ac.id/index.php/repositor/article/view/32284/14105) E. Ayuningrum, Y. Azhar, and G. I. Marthasari, “Sistem Rekomendasi Produk Skincare Korea Berbasis Web Menggunakan Metode Collaborative Filtering”, JR, vol. 4, no. 4, Feb. 2024.
+## 📊 Statistik Dasar Dataset Film
+Kode ini bertujuan untuk menampilkan jumlah item unik dan rentang rating pada dataset film yang telah diencode.
 
-[6] Dicoding. Diakses pada 30 Oktober 2024 dari https://www.dicoding.com/academies/319-machine-learning-terapan
+# ss_statdas
 
-[7] Kaggle. Diakses pada 01 Desember 2024 dari https://www.kaggle.com/code/slaymaneslime/marketing-approach-beauty-comestics-analysis
+### 📑 Tahapan Pemrosesan
+1. **🔢 Jumlah Unik Film**
+
+`rack = len(film_to_film_encoded)`
+
+`num_name = len(encoded_to_movie)`
+
+- Tujuan:
+  - `num_track` menghitung jumlah `film_id ` unik yang telah di-encode ke bentuk angka.
+  - `num_name` menghitung jumlah `movie_label` unik (judul + genre) yang telah di-encode.
+
+- Hasil:
+    - 🎞️ 9724 film unik berdasarkan ID (film_id)
+    - 🎬 9724 judul film unik berdasarkan deskripsi (movie_label)
+
+2. **⭐ Rentang Popularitas (Rating)**
+
+`min_popularity = min(dataset_filter["rating"])`
+
+`max_popularity = max(dataset_filter["rating"])`
+
+- Insight:
+  - `min_popularity`: nilai rating terendah dalam dataset (popularitas minimal).
+  - `max_popularity`: nilai rating tertinggi dalam dataset (popularitas maksimal).
+
+- Hasil:
+    - 📉 Rating terendah: 0.5
+    - 📈 Rating tertinggi: 5.0
+---
+### 🔍 Kesimpulan: 
+**Dataset ini terdiri dari 9724 film unik, dengan rentang rating dari 0.5 hingga 5.0. Ini penting untuk skala normalisasi atau thresholding saat melatih model rekomendasi.**
+
+## 🎲 Menyiapkan Data untuk Collaborative Filtering
+Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collaborative Filtering berdasarkan atribut:
+- `track`: ID numerik dari film (film_id)
+- `name`: Label film (movie_label)
+- `rating`: Rating sebagai representasi preferensi pengguna
+
+# ss_preparecollab
+
+### 📦 Tahap Pemrosesan:
+1. **Utama:**
+- *🧩 Kode:* `collaborative_based = dataset_filter[["track", "name", "rating"]].sample(frac=1, random_state=42)`
+
+2. **Penjelasan:**
+- *🧩 Kode:* `dataset_filter[["track", "name", "rating"]]`
+> Mengambil hanya kolom yang relevan untuk model rekomendasi berbasis kolaboratif.
+
+- *🧩 Kode:* `.sample(frac=1, random_state=42)`
+> Mengacak seluruh baris (100% data karena frac=1), sambil menjaga konsistensi pengacakan dengan random_state=42.
+
+---
+### 💡 Catatan:
+**Track dan Name memiliki nilai yang sama karena sebelumnya telah dibuat dengan indeks yang identik (film_id dan movie_label dipetakan ke angka berdasarkan urutan).**
+
+## 📊 Menyiapkan Data Training dan Validasi untuk Collaborative Filtering
+Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine learning, khususnya model rekomendasi berbasis Collaborative Filtering Neural Network.
+
+# ss_preparetrainval
+
+### 📑 Tahapan Pemrosesan:
+
+1. *🧩 Kode:* `x = collaborative_based[["track", "name"]].values`
+- Mengambil kolom track (film ID numerik) dan name (movie_label numerik) sebagai fitur input (x).
+- Hasil akhir:
+  > array 2D [ [track, name], ... ] berisi pasangan fitur (anggap seperti user_id dan item_id, meskipun di sini keduanya adalah film).
+
+2. *🧩 Kode:* `y = collaborative_based["rating"].apply(lambda x: (x - min_popularity) / (max_popularity - min_popularity)).values`
+
+- Melakukan normalisasi rating ke skala 0–1 menggunakan Min-Max Scaling.
+> Ini penting untuk stabilitas pelatihan model neural network.
+
+
+3. 🧪 Membagi Data: Train dan Validation
+
+- *🧩 Kode:* `train_indices = int(0.8 * collaborative_based.shape[0])`
+  - Menghitung jumlah data untuk training (80% dari total data).
+
+-  *🧩 Kode:*
+
+
+`x_train, x_val, y_train, y_val = (`
+
+
+   `x[:train_indices],`
+
+
+   `x[train_indices:],`
+
+
+   `y[:train_indices],`
+
+
+   `y[train_indices:]`
+
+   
+`)`
+
+   - Membagi x dan y ke dalam data training (80%) dan validasi (20%).
+
+---
+### 📌 Catatan
+**Data sekarang sudah siap digunakan untuk melatih model rekomendasi berbasis neural network seperti Embedding + Dense layers.**
+
+## 💡 Model RecommenderNet: Collaborative Filtering dengan Neural Network
+Model ini merupakan Neural Collaborative Filtering berbasis Embedding Layer. 
+
+# ss_modelcollab
+
+- 🎯 Tujuannya:
+   - memprediksi skor rating (yang telah dinormalisasi) dari pasangan track dan name (dalam konteks ini keduanya adalah film).
+---
+### 🔗 Alur Kode:
+**1. 🧱 Struktur Class RecommenderNet**
+- *🧩 Kode 1:*
+
+  `class RecommenderNet(tf.keras.Model)`
+   > - Inisialisasi custom model menggunakan tf.keras.Model sebagai superclass.
+   > - Dibuat untuk mempelajari representasi (embedding) dan hubungan antara track dan name.
+
+**2. 🔧 __init__() — Inisialisasi Layer**
+- *🧩 Kode 1:*
+
+  `self.track_embedding = layers.Embedding(...)`
+
+  `self.name_embedding = layers.Embedding(...)`
+  > - Layer Embedding untuk track dan name. Masing-masing merepresentasikan ID film ke dalam vektor berdimensi embedding_size.
+    
+- *🧩 Kode 2:*
+
+    `self.name_bias = layers.Embedding(num_name, 1)`
+
+    `self.track_bias = layers.Embedding(num_track, 1)`
+  > - Bias tambahan per track dan name (mirip dengan bias per user dan item dalam matrix factorization).
+
+- *🧩 Kode 3:*
+    `self.dropout = layers.Dropout(0.3)`
+
+  > - Menonaktifkan 30% neuron selama training (mengurangi overfitting)
+  
+**3. 🔁 call() — Proses Forward Pass**
+
+- *🧩 Kode 1:*
+
+    `track_vector = self.track_embedding(inputs[:,0])`
+
+    `track_bias = self.track_bias(inputs[:, 0])`
+  > - Mengambil vektor embedding dan bias untuk track.
+
+- *🧩 Kode 2:*
+
+    `name_vector = self.name_embedding(inputs[:, 1])`
+
+    `name_bias = self.name_bias(inputs[:, 1])`
+  > - Mengambil vektor embedding dan bias untuk name.
+
+- *🧩 Kode 3:*
+
+    `dot_track_name = tf.reduce_sum(track_vector * name_vector, axis=1, keepdims=True)`
+
+    `Operasi utama: menghitung dot product antara embedding track dan name.`
+
+  > - Dot product merepresentasikan seberapa besar kecocokan antara dua entitas (semakin besar, semakin cocok).
+
+- *🧩 Kode 4:*
+
+    `x = dot_track_name + track_bias + name_bias`
+  > - Menambahkan bias individual ke hasil dot product.
+- *🧩 Kode 5:*
+    `x = self.dropout(x)`
+  > - Menambahkan dropout setelah kombinasi
+- *🧩 Kode 6:*
+    `return tf.nn.sigmoid(tf.keras.layers.Flatten()(x))`
+  > - Hasil akhir dilalui fungsi aktivasi sigmoid, sehingga output berada di antara 0–1.
+  > - Flatten() memastikan hasilnya berupa vektor 1 dimensi.
+
+---
+### 🧠 Tujuan Utama
+Model ini akan belajar:
+- Vektor embedding track dan name yang optimal.
+- Bias dari masing-masing track dan name.
+- Pola interaksi antara mereka yang menghasilkan prediksi skor mirip rating.
+
+## 🔧 Kompilasi Model RecommenderNet
+Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compile model agar siap untuk dilatih.
+
+# ss_compilemodelcollab
+
+### Tahapan Modelling
+**1. 📦 Membuat Instance Model**
+- *🧩 Kode 1:*
+
+    `model = RecommenderNet(num_track, num_name, embedding_size=20)`
+    > - Membuat objek dari class RecommenderNet.
+
+**2. ⚙️ Compile Model**
+- *🧩 Kode 5:*
+
+`model.compile(`
+
+`    loss = tf.keras.losses.BinaryCrossentropy(),`    
+
+`    optimizer = keras.optimizers.Adam(learning_rate = 0.001),`
+
+`    metrics = [tf.keras.metrics.RootMeanSquaredError()]`
+
+`)`
+
+- ✅ Penjelasan:
+    1. loss = BinaryCrossentropy()
+       - Meski rating adalah nilai numerik, model memprediksi skor dalam skala [0,1] (karena sigmoid di output).
+       - Maka, binary crossentropy digunakan untuk mengukur seberapa jauh prediksi dari target.
+       - Ini bekerja dengan baik saat target (rating) telah dinormalisasi.
+    2. optimizer = Adam(learning_rate = 0.001)
+       - Adam adalah optimisasi populer berbasis adaptasi learning rate, cepat konvergen.
+       - Learning rate 0.001 adalah nilai standar yang sering bekerja baik.
+       - metrics = [RootMeanSquaredError()].
+       - Untuk mengevaluasi model dengan metrik RMSE (Root Mean Squared Error), karena ini umum dipakai dalam sistem rekomendasi.
+---
+### 🎯 Hasil Akhir
+**Model siap untuk dilatih menggunakan .fit() dengan data training (x_train, y_train) dan validasi (x_val, y_val).**
+
+## 🚀 Melatih Model
+
+# ss_trainmodel
+
+### 📝 Penjelasan Parameter:
+| Parameter                        | Fungsi                                                                                                          |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `x_train`                        | Input fitur training, berupa pasangan `track` dan `name` yang telah di-*encode*.                                |
+| `y_train`                        | Label/target training, berupa **rating yang telah dinormalisasi ke skala 0–1**.                                 |
+| `batch_size=32`                  | Jumlah sampel yang diproses sebelum parameter model diupdate. Ukuran kecil seperti 32 bagus untuk generalisasi. |
+| `epochs=50`                      | Model akan melalui seluruh dataset training sebanyak **50 kali**.                                               |
+| `validation_data=(x_val, y_val)` | Dataset validasi untuk memantau performa model di data yang tidak dilatih, pada akhir setiap epoch.             |
+
+---
+### 📦 Apa yang Dihasilkan?
+- Variabel history menyimpan log proses training, termasuk:
+  - Nilai loss dan RMSE untuk training dan validasi setiap epoch.
+  - Data ini bisa digunakan untuk visualisasi kurva learning.
+
+## C. Testing System Recommendation
+
+# model_grafik
+
+### 📌 Penjelasan Grafik
+
+**1. 📉 RMSE Training Menurun Konsisten**
+- Grafik menunjukkan bahwa RMSE pada data training terus menurun secara stabil seiring bertambahnya epoch. Ini artinya:
+  - Model berhasil belajar dari data.
+  - Tidak ada masalah besar seperti overfitting ekstrim (kalau ada, RMSE training akan menurun tajam tapi validation malah naik).
+  - Stabilitas Model
+
+**2. 🚀 RMSE pada data validasi tampak stabil**
+- Model tidak mengalami perubahan drastis atau ketidakstabilan saat pelatihan.
+- Bisa menjadi indikasi bahwa model cukup resisten terhadap noise, atau memang validasi datanya sudah cukup homogen.
+- Cocok untuk Use Case Ringan
+    > Karena ini adalah eksperimen ML sederhana, model ini sudah cukup representatif untuk digunakan dalam pembelajaran, prototipe awal, atau aplikasi dengan lingkup terbatas seperti:
+    - Sistem rekomendasi lokal
+    - Uji coba model embedding
+    - Pembelajaran konsep rekomendasi
+
+## Membuat Fungsi Rekomendasi
+
+# ss_fungsireq
+
+### 💡 Fungsi dan Tujuan
+Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input tertentu (judulnya), dengan memanfaatkan model pembelajaran mesin yang sudah dilatih.
+
+---
+### ✅ Keunggulan:
+- Sudah menangani pengecekan input tidak valid.
+- Bisa memberikan rekomendasi berdasarkan pembelajaran model.
+- Output sudah ramah pengguna: menampilkan genre dan rating.
+
+## 🗳️ Penyaringan Baris
+
+# ss_filterbaris
+
+### 🔍 Penjelasan:
+*1. 🧩Kode:* `dataset_filter["title"].eq("Toy Story (1995)")`:
+
+- Mengecek setiap baris apakah kolom "title" sama persis dengan "Toy Story (1995)". Hasilnya adalah array boolean (True jika cocok, False jika tidak).
+
+*2. 🧩Kode:* `dataset_filter[...]`:
+- Menggunakan hasil pengecekan tadi untuk menyaring baris di DataFrame.
+---
+### 🧾 Tujuan:
+- Untuk melihat informasi detail tentang film "Toy Story (1995)" di dalam dataset, seperti:
+  - ID film
+  - Genre
+  - Rating
+  - Kolom lain yang tersedia
+
+## ⚙️ Menjalankan Fungsi Machine Learning
+
+# ss_runmachine
+
+### ✅ Penjelasan Langkah yang Terjadi:
+- Pencocokan Label:
+    > Fungsi akan mencocokkan "Toy Story (1995) (Adventure Animation Children Comedy Fantasy)" ke dalam dictionary movie_to_encoded.
+
+- Input ke Model:
+    > Akan dibuat array kombinasi dari semua film_id dengan movie_label dari "Toy Story", untuk memprediksi seberapa besar kemungkinan pengguna menyukai film lain jika ia menyukai Toy Story.
+
+- Prediksi:
+    > Model memberikan prediksi skor (antara 0–1) menggunakan model.predict() untuk semua kombinasi tersebut.
+
+- Pemilihan Top-N:
+    > Mengambil top N film (default top_n=10) dengan skor prediksi tertinggi.
+
+- Output:
+    > Menampilkan daftar film rekomendasi dengan:
+
+- 🎬 Judul film:
+    - Genre
+    - Rating
+
+# Referensi
+[[1]]https://j-ptiik.ub.ac.id/index.php/j-ptiik/article/download/9163/4159/64730
+
+[[2]]https://sensasi.upnjatim.ac.id/index.php/sensasi/article/view/83
+
+[3] Dicoding. Diakses pada 12 Juni 2025 dari https://www.dicoding.com/academies/319-machine-learning-terapan
+
+[4] Kaggle. Diakses pada 16 Juni 2025 dari https://www.kaggle.com/datasets/abhikjha/movielens-100k
