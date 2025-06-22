@@ -56,7 +56,9 @@ Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis
 - from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, classification_report
 
 ## 🚀 Data Loading
-# Masukkan ss_dl
+
+![Gambar.1](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dl.png)
+
 
 ### 📌 Penjelasan Kode:
 - pd.read_csv(...) digunakan untuk membaca file CSV ke dalam DataFrame.
@@ -70,7 +72,9 @@ Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis
 - genres : Genre film yang dipisahkan dengan tanda | (pipe).
 
 ## 🧩 Penggabungan Datasets
-# masukkan ss_mixdf
+
+![Gambar.2](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_mixdf.png)
+
 
 ### 🧾 Penjelasan Kolom dalam Data Gabungan (df_merged)
 Setelah kita gabungkan data ratings.csv dan movies.csv, kita punya beberapa kolom penting, yaitu:
@@ -92,7 +96,9 @@ Dengan kolom-kolom ini, kita bisa melakukan berbagai analisis menarik, misalnya:
 - Rekomendasi film berdasarkan genre atau rating tertinggi.
 
 ## Deskripsi Type Data Pada Variabel
-# ss_typed
+
+![Gambar.3](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_typed.png)
+
 ### 📌 Penjelasan:
 - <class 'pandas.core.frame.DataFrame'>: Menunjukkan bahwa objek ini adalah sebuah DataFrame dari pustaka pandas.
 - RangeIndex: Menandakan jumlah total baris adalah 100.836, dengan indeks mulai dari 0 sampai 100.835.
@@ -111,7 +117,9 @@ Dengan kolom-kolom ini, kita bisa melakukan berbagai analisis menarik, misalnya:
 - memory usage: Menunjukkan jumlah memori yang digunakan oleh DataFrame ini di RAM, yaitu sekitar 4,6 megabyte.
 
 ## Jumlah Data
-# ss_row
+
+![Gambar.4](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_row.png)
+
 ### 🔢 Jumlah Baris dan Kolom
 1. Total Baris (Rows): 100.836
    - Artinya, dataset ini memiliki 100.836 entri atau data rating individual yang diberikan oleh berbagai pengguna terhadap berbagai film.
@@ -131,8 +139,11 @@ Dengan kolom-kolom ini, kita bisa melakukan berbagai analisis menarik, misalnya:
 - Aktivitas pengguna berdasarkan waktu
 
 ## Deskripsi Data
-# ss_des
-#### 📊 Statistik Deskriptif
+
+![Gambar.5](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_des.png)
+
+
+### 📊 Statistik Deskriptif
 Fungsi describe() memberikan ringkasan statistik untuk kolom numerik dalam dataset. Berikut penjelasannya untuk masing-masing kolom:
 
 | Kolom         | Penjelasan Singkat                                                                                                                                                               |
@@ -143,7 +154,7 @@ Fungsi describe() memberikan ringkasan statistik untuk kolom numerik dalam datas
 | **timestamp** | Waktu saat rating diberikan, dalam format Unix timestamp (jumlah detik sejak 1 Januari 1970). Perlu dikonversi ke format tanggal agar lebih mudah dibaca.                        |
 
 ---
-#### 📚 Rangkuman Statistik:
+### 📚 Rangkuman Statistik:
 
 | Statistik    | userId  | movieId | rating  | timestamp (Unix)                   |
 | ------------ | ------- | ------- | ------- | ---------------------------------- |
@@ -190,20 +201,20 @@ Kolom timestamp menunjukkan data mencakup periode panjang (sekitar 1996–2018),
 # 🧼 Data Cleaning
 ## 📑 Duplikasi Data
 
-# ss_dup
+![Gambar.6](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dup.png)
 
 Dalam dataset ini tidak ditemukan adanya duplikasi data.
 
 ## 🆘 Missing Value
 
-# ss_mis
+![Gambar.7](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_mis.png)
 
 Dalam dataset ini tidak ditemukan adanya missing value.
 
 # Exploratory Data  Analysis (EDA)
 ## Memisahkan Kolom Genre
 
-# ss_gen
+![Gambar.8](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_gen.png)
 
 ### 🧩 Penjelasan Kode:
 1. `df_merged['genres_split'] = df_merged['genres'].str.split('|'): `
@@ -214,7 +225,7 @@ Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehin
 
 ## Grafik Distribusi Jumlah Film per Genre
 
-# eda_1
+![Gambar.9](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_1.png)
 
 ### 🧩 Penjelasan Kode:
 `sns.countplot(..., y='genres_split', order=..., palette='viridis'): `
@@ -241,7 +252,7 @@ Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehin
 
 ## Distribusi Panjang Judul Film
 
-# eda_2
+![Gambar.10](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_2.png)
 
 ### 📌 Insight dari Grafik:
 - Sebagian besar judul film memiliki panjang antara 15 hingga 30 karakter.
@@ -258,13 +269,13 @@ Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehin
 
 ## Korelasi Antar Fitur Numerik
 
-# eda_kor
+![Gambar.11](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_kor.png)
 
-#### 🎯 Tujuan:
+### 🎯 Tujuan:
 Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom numerik dalam dataset gabungan df_merged.
 
 ---
-#### 📌 Interpretasi Heatmap:
+### 📌 Interpretasi Heatmap:
 | Kolom                      | Korelasi yang Terlihat      | Penjelasan Singkat                                                                                  |
 | -------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------- |
 | **userId & rating**        | -0.05 (lemah negatif)       | Tidak ada hubungan kuat antara user ID dan rating yang diberikan.                                   |
@@ -280,7 +291,8 @@ Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom nu
 
 ## Rata-rata Rating dan Total Review per Genre
 
-# eda_avg
+![Gambar.12](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_avg.png)
+
 
 ### 🎬 Analisis Rating dan Jumlah Review berdasarkan Genre:
 - Visualisasi ini menggambarkan dua hal penting dalam industri film berdasarkan genre:
@@ -316,7 +328,8 @@ Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom nu
 
 ## Top 10 Genres & Movies
 
-# eda_top10
+![Gambar.13](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_top10.png)
+
 
 ### 🎯Tujuan:
 Visualisasi ini menyoroti genre dan film dengan kualitas terbaik berdasarkan rata-rata rating tertinggi dari seluruh dataset.
@@ -406,7 +419,7 @@ Semua film di atas memiliki rating hampir sempurna (mendekati 5.0).
 
 ## Membuat `Dataset_Content`
 
-# ss_datacontent
+![Gambar.14](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_datacontent.png)
 
 ### 🎯 Tujuan Utama Kode
 Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fitur-fitur deskriptif dari film, seperti:
@@ -448,6 +461,7 @@ Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fi
 
 ---
 ### 📊 Isi dataset_content.head()
+
 | movieId | title                   | genres                               | rating | genres\_split                     | title\_length | movie\_label                                         | content\_features               |
 | ------- | ----------------------- | ------------------------------------ | ------ | --------------------------------- | ------------- | ---------------------------------------------------- | ------------------------------- |
 | 1       | Toy Story (1995)        | \[Adventure, Animation, Children...] | 4.0    | \[Adventure, Animation, Children] | 16            | Toy Story (1995) (\[Adventure, Animation, Children]) | Adventure Animation Children 16 |
@@ -460,7 +474,7 @@ Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fi
 
 ## Membuat List Dari Kolom-kolom Penting Pada `dataset_content`
 
-# ss_contentfeatures
+![Gambar.15](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentfeatures.png)
 
 ### 🎯 Tujuan Kode
 Kode ini bertujuan untuk:
@@ -514,7 +528,7 @@ Kode ini bertujuan untuk:
 
 ## 📦 Membuat Dataset `content_based_data`
 
-# ss_contentbased
+![Gambar.16](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentbased.png)
 
 Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang akan digunakan sebagai dasar dalam sistem content-based recommendation.
 
@@ -546,7 +560,7 @@ Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang a
 
 ## 📐 Penerapan TF-IDF dan Cosine Similarity
 
-# ss_penerapanconsine
+![Gambar.17](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_penerapanconsine.png)
 
 1. 📚 Penjelasan
 
@@ -567,7 +581,7 @@ Artinya:
 
 ## 📊 Matriks Cosine Similarity
 
-# ss_matrixconsine
+![Gambar.18](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_matrixconsine.png)
 
 ### 🧩 Tujuan:
 Matriks ini akan digunakan untuk membuat sistem rekomendasi, dengan cara memilih film yang memiliki nilai cosine similarity tertinggi terhadap film yang dipilih pengguna.
@@ -592,7 +606,7 @@ Jika cosine_sim[2, 8745] = 0.37278331, maka:
 
 ## Mengubah TF-IDF Matrix Menjadi Dataframe
 
-# ss_ubahtfidf
+![Gambar.19](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_ubahtfidf.png)
 
 ### 💡 Tujuan:
 - Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
@@ -631,7 +645,7 @@ Semakin tinggi nilainya, semakin mirip dua film tersebut dari segi konten (genre
 - Untuk sistem rekomendasi berbasis konten (Content-Based Filtering).
 - Saat user menyukai film tertentu (misalnya film ke-0), kita bisa ambil film lain yang punya nilai similarity tertinggi terhadap film tersebut.
 
-# ss_consinemain
+![Gambar.20](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinemain.png)
 
 ---
 ### 🧮 Penjelasan Matriks Hasil:
@@ -649,7 +663,7 @@ Matriks cosine_sim berisi skor kemiripan antar film berdasarkan fitur konten (ge
 
 ## ⚙️ Penerapan Consine Similarity
 
-# ss_consinesubmain
+![Gambar.21](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinesubmain.png)
 
 ### 🎯 Tujuan:
 -  untuk membuat sistem rekomendasi film.
@@ -697,7 +711,7 @@ Matriks cosine_sim berisi skor kemiripan antar film berdasarkan fitur konten (ge
 
 ## 🧠 Membuat Fungsi `content_based_movie_recommendations`
 
-# ss_systemreq
+![Gambar.22](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_systemreq.png)
 
 ### 🎯 Tujuan:
 Memberikan rekomendasi film berdasarkan konten (genre + panjang judul) menggunakan cosine similarity.
@@ -738,7 +752,7 @@ Jika judul tidak ditemukan dalam data, maka fungsi akan mengembalikan pesan erro
 
 ## 🔎 Contoh Pencarian Dataset Content
 
-# ss_pencariandataset
+![Gambar.23](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_pencariandataset.png)
 
 ### 🎯 Tujuan:
 Mencari semua film dalam dataset yang judulnya mengandung kata "Toy Story", baik huruf besar maupun kecil (case=False).
@@ -757,7 +771,7 @@ Mencari semua film dalam dataset yang judulnya mengandung kata "Toy Story", baik
 
 ## 🏃‍♂️ Menjalankan Fungsi `content_based_movie_recommendations()`
 
-# ss_runcbm
+![Gambar.24](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runcbm.png)
 
 ### 🎯 Tujuan:
 Fungsi `content_based_movie_recommendations()` mencari film yang paling mirip secara konten (genre dan panjang judul) dengan film "Toy Story (1995)", berdasarkan cosine similarity dari representasi TF-IDF.
@@ -791,8 +805,7 @@ Collaborative Filtering (CF) merekomendasikan item berdasarkan interaksi penggun
 
 ## 🔖 Persiapan `content_features`
 
-# ss_collab
-
+![Gambar.25](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_collab.png)
 
 ### 🎯 Tujuan:
 Mempersiapkan fitur konten (content_features) untuk sistem Content-Based Filtering berdasarkan:
@@ -840,7 +853,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 
 ## ⏏️ Menambahkan Kolom `film_id`
 
-# ss_addfilm
+![Gambar.26](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_addfilm.png)
 
 ### 📌 Tujuan:
 
@@ -875,7 +888,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 ## 🎯 Encoding dan Decoding film_id
 Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritma machine learning biasanya membutuhkan input dalam bentuk angka, bukan string.
 
-# ss_encodefilm
+![Gambar.27](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodefilm.png)
 
 ### 🔎 Pemrosesan Kode
 **1. 🔄 Mengambil film_id unik dalam bentuk list**
@@ -921,7 +934,7 @@ Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritm
 ## 🎬 Encoding dan Decoding movie_label
 Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, karena model membutuhkan data dalam bentuk angka, bukan teks.
 
-# ss_encodemovie
+![Gambar.28](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodemovie.png)
 
 ### 📈 Tahapan Pemrosesan:
 **1. 🔄 Mengubah movie_label menjadi list unik**
@@ -981,7 +994,7 @@ Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, k
 ## 🔗 Menambahkan Kolom `track` dan `name` ke Dataset
 Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan movie_label ke dalam dataframe dataset_filter, yang akan berguna dalam proses training model berbasis Collaborative Filtering.
 
-# ss_trackname
+![Gambar.29](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trackname.png)
 
 ### 📑 Tahapan Pemrosesan
 **1. 📌 track → Hasil Encoding dari film_id**
@@ -1013,7 +1026,7 @@ Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan
 ## 📊 Statistik Dasar Dataset Film
 Kode ini bertujuan untuk menampilkan jumlah item unik dan rentang rating pada dataset film yang telah diencode.
 
-# ss_statdas
+![Gambar.30](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_statdas.png)
 
 ### 📑 Tahapan Pemrosesan
 1. **🔢 Jumlah Unik Film**
@@ -1053,7 +1066,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 - `name`: Label film (movie_label)
 - `rating`: Rating sebagai representasi preferensi pengguna
 
-# ss_preparecollab
+![Gambar.31](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparecollab.png)
 
 ### 📦 Tahap Pemrosesan:
 1. **Utama:**
@@ -1073,7 +1086,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 ## 📊 Menyiapkan Data Training dan Validasi untuk Collaborative Filtering
 Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine learning, khususnya model rekomendasi berbasis Collaborative Filtering Neural Network.
 
-# ss_preparetrainval
+![Gambar.32](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparetrainval.png)
 
 ### 📑 Tahapan Pemrosesan:
 
@@ -1122,7 +1135,7 @@ Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine l
 ## 💡 Model RecommenderNet: Collaborative Filtering dengan Neural Network
 Model ini merupakan Neural Collaborative Filtering berbasis Embedding Layer. 
 
-# ss_modelcollab
+![Gambar.33](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_modelcollab.png)
 
 - 🎯 Tujuannya:
    - memprediksi skor rating (yang telah dinormalisasi) dari pasangan track dan name (dalam konteks ini keduanya adalah film).
@@ -1201,7 +1214,7 @@ Model ini akan belajar:
 ## 🔧 Kompilasi Model RecommenderNet
 Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compile model agar siap untuk dilatih.
 
-# ss_compilemodelcollab
+![Gambar.34](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_compilemodelcollab.png)
 
 ### Tahapan Modelling
 **1. 📦 Membuat Instance Model**
@@ -1239,7 +1252,7 @@ Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compi
 
 ## 🚀 Melatih Model
 
-# ss_trainmodel
+![Gambar.35](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trainmodel.png)
 
 ### 📝 Penjelasan Parameter:
 | Parameter                        | Fungsi                                                                                                          |
@@ -1258,7 +1271,7 @@ Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compi
 
 ## C. Testing System Recommendation
 
-# model_grafik
+![Gambar.36](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/model_grafik.png)
 
 ### 📌 Penjelasan Grafik
 
@@ -1279,7 +1292,7 @@ Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compi
 
 ## Membuat Fungsi Rekomendasi
 
-# ss_fungsireq
+![Gambar.37](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_fungsireq.png)
 
 ### 💡 Fungsi dan Tujuan
 Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input tertentu (judulnya), dengan memanfaatkan model pembelajaran mesin yang sudah dilatih.
@@ -1292,7 +1305,7 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
 
 ## 🗳️ Penyaringan Baris
 
-# ss_filterbaris
+![Gambar.37](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_filterbaris.png)
 
 ### 🔍 Penjelasan:
 *1. 🧩Kode:* `dataset_filter["title"].eq("Toy Story (1995)")`:
@@ -1311,7 +1324,7 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
 
 ## ⚙️ Menjalankan Fungsi Machine Learning
 
-# ss_runmachine
+![Gambar.38](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runmachine.png)
 
 ### ✅ Penjelasan Langkah yang Terjadi:
 - Pencocokan Label:
