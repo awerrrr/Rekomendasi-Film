@@ -554,6 +554,54 @@ Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang a
 - Dengan data ini, kita bisa membangun sistem rekomendasi yang menjawab:
 > "Jika pengguna menyukai film X, film apa yang mirip dari segi kontennya?"
 
+## 📐 Penerapan TF-IDF dan Cosine Similarity
+
+![Gambar.20](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_penerapanconsine.png)
+
+1. 📚 Penjelasan
+
+| Langkah                  | Penjelasan                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TfidfVectorizer()`      | Membuat objek untuk mengubah teks menjadi vektor numerik berbasis frekuensi dan kekhasan kata (TF-IDF).                                               |
+| `fit_transform(...)`     | Menerapkan TF-IDF pada kolom `content_features`, menghasilkan matriks numerik berdimensi `(9724, fitur unik)`.                                        |
+| `cosine_similarity(...)` | Menghitung kemiripan (cosine similarity) antar semua film berdasarkan vektor kontennya. Hasilnya adalah **matriks simetri** berukuran `(9724, 9724)`. |
+
+---
+2. 📏 Hasil:
+`Cosine similarity matrix shape: (9724, 9724)`
+
+Artinya:
+- Kita memiliki 9724 film unik.
+- Matriks ini menunjukkan tingkat kemiripan antar setiap pasang film.
+- Nilai kemiripan berkisar antara 0 (tidak mirip) hingga 1 (sangat mirip).
+
+## Mengubah TF-IDF Matrix Menjadi Dataframe
+
+![Gambar.21](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_ubahtfidf.png)
+
+### 💡 Tujuan:
+- Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
+- Berguna untuk mengecek atau men-debug nilai TF-IDF tiap film secara manual.
+- Bisa juga dipakai untuk visualisasi atau analisis fitur konten lebih lanjut (misalnya: genre mana yang paling banyak muncul atau paling kuat bobotnya di film tertentu).
+
+---
+### 📚 Penjelasan:
+
+| Komponen                                  | Penjelasan                                                                                                                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tfidf_matrix`                            | Matriks hasil transformasi `TfidfVectorizer`, berisi bobot TF-IDF dari setiap fitur (genre + panjang judul) untuk tiap film.                                                      |
+| `.todense()`                              | Mengubah sparse matrix menjadi dense (matriks penuh), agar bisa dibaca sebagai tabel.                                                                                             |
+| `tfidf.get_feature_names_out()`           | Mengambil semua **fitur** (kata-kata unik dari `content_features`, misalnya: `Action`, `Comedy`, `Thriller`, `16`, dll) yang dipakai dalam TF-IDF. Ini akan jadi kolom DataFrame. |
+| `index=content_based_data["movie_label"]` | Menjadikan **label film** sebagai indeks baris (row) dari DataFrame. Setiap baris mewakili satu film.                                                                             |
+
+---
+
+### ✅ Kesimpulan:
+tfidf_df akan menjadi DataFrame dengan:
+- Rows: Nama-nama film (movie_label)
+- Columns: Fitur konten unik (genre + panjang judul)
+- Values: Nilai bobot TF-IDF (semakin tinggi → kata tersebut penting bagi film itu)
+
 ## B. Collaborative-based Filtering Preparation
 
 ### 📚Apa itu Collaborative Filtering?
@@ -573,7 +621,7 @@ Collaborative Filtering (CF) merekomendasikan item berdasarkan interaksi penggun
 
 ## 🔖 Persiapan `content_features`
 
-![Gambar.20](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_collab.png)
+![Gambar.22](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_collab.png)
 
 ### 🎯 Tujuan:
 Mempersiapkan fitur konten (content_features) untuk sistem Content-Based Filtering berdasarkan:
@@ -621,7 +669,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 
 ## ⏏️ Menambahkan Kolom `film_id`
 
-![Gambar.21](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_addfilm.png)
+![Gambar.23](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_addfilm.png)
 
 ### 📌 Tujuan:
 
@@ -656,7 +704,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 ## 🎯 Encoding dan Decoding film_id
 Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritma machine learning biasanya membutuhkan input dalam bentuk angka, bukan string.
 
-![Gambar.22](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodefilm.png)
+![Gambar.24](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodefilm.png)
 
 ### 🔎 Pemrosesan Kode
 **1. 🔄 Mengambil film_id unik dalam bentuk list**
@@ -702,7 +750,7 @@ Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritm
 ## 🎬 Encoding dan Decoding movie_label
 Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, karena model membutuhkan data dalam bentuk angka, bukan teks.
 
-![Gambar.23](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodemovie.png)
+![Gambar.25](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodemovie.png)
 
 ### 📈 Tahapan Pemrosesan:
 **1. 🔄 Mengubah movie_label menjadi list unik**
@@ -762,7 +810,7 @@ Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, k
 ## 🔗 Menambahkan Kolom `track` dan `name` ke Dataset
 Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan movie_label ke dalam dataframe dataset_filter, yang akan berguna dalam proses training model berbasis Collaborative Filtering.
 
-![Gambar.24](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trackname.png)
+![Gambar.26](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trackname.png)
 
 ### 📑 Tahapan Pemrosesan
 **1. 📌 track → Hasil Encoding dari film_id**
@@ -794,7 +842,7 @@ Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan
 ## 📊 Statistik Dasar Dataset Film
 Kode ini bertujuan untuk menampilkan jumlah item unik dan rentang rating pada dataset film yang telah diencode.
 
-![Gambar.25](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_statdas.png)
+![Gambar.27](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_statdas.png)
 
 ### 📑 Tahapan Pemrosesan
 1. **🔢 Jumlah Unik Film**
@@ -834,7 +882,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 - `name`: Label film (movie_label)
 - `rating`: Rating sebagai representasi preferensi pengguna
 
-![Gambar.26](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparecollab.png)
+![Gambar.28](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparecollab.png)
 
 ### 📦 Tahap Pemrosesan:
 1. **Utama:**
@@ -854,7 +902,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 ## 📊 Menyiapkan Data Training dan Validasi untuk Collaborative Filtering
 Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine learning, khususnya model rekomendasi berbasis Collaborative Filtering Neural Network.
 
-![Gambar.27](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparetrainval.png)
+![Gambar.29](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparetrainval.png)
 
 ### 📑 Tahapan Pemrosesan:
 
@@ -904,53 +952,6 @@ Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine l
 Proses mendesain struktur data untuk keperluan penyimpanan dan analisis. 
 
 ## A. Content Based Filtering Modeling
-## 📐 Penerapan TF-IDF dan Cosine Similarity
-
-![Gambar.28](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_penerapanconsine.png)
-
-1. 📚 Penjelasan
-
-| Langkah                  | Penjelasan                                                                                                                                            |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TfidfVectorizer()`      | Membuat objek untuk mengubah teks menjadi vektor numerik berbasis frekuensi dan kekhasan kata (TF-IDF).                                               |
-| `fit_transform(...)`     | Menerapkan TF-IDF pada kolom `content_features`, menghasilkan matriks numerik berdimensi `(9724, fitur unik)`.                                        |
-| `cosine_similarity(...)` | Menghitung kemiripan (cosine similarity) antar semua film berdasarkan vektor kontennya. Hasilnya adalah **matriks simetri** berukuran `(9724, 9724)`. |
-
----
-2. 📏 Hasil:
-`Cosine similarity matrix shape: (9724, 9724)`
-
-Artinya:
-- Kita memiliki 9724 film unik.
-- Matriks ini menunjukkan tingkat kemiripan antar setiap pasang film.
-- Nilai kemiripan berkisar antara 0 (tidak mirip) hingga 1 (sangat mirip).
-
-## Mengubah TF-IDF Matrix Menjadi Dataframe
-
-![Gambar.29](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_ubahtfidf.png)
-
-### 💡 Tujuan:
-- Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
-- Berguna untuk mengecek atau men-debug nilai TF-IDF tiap film secara manual.
-- Bisa juga dipakai untuk visualisasi atau analisis fitur konten lebih lanjut (misalnya: genre mana yang paling banyak muncul atau paling kuat bobotnya di film tertentu).
-
----
-### 📚 Penjelasan:
-
-| Komponen                                  | Penjelasan                                                                                                                                                                        |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tfidf_matrix`                            | Matriks hasil transformasi `TfidfVectorizer`, berisi bobot TF-IDF dari setiap fitur (genre + panjang judul) untuk tiap film.                                                      |
-| `.todense()`                              | Mengubah sparse matrix menjadi dense (matriks penuh), agar bisa dibaca sebagai tabel.                                                                                             |
-| `tfidf.get_feature_names_out()`           | Mengambil semua **fitur** (kata-kata unik dari `content_features`, misalnya: `Action`, `Comedy`, `Thriller`, `16`, dll) yang dipakai dalam TF-IDF. Ini akan jadi kolom DataFrame. |
-| `index=content_based_data["movie_label"]` | Menjadikan **label film** sebagai indeks baris (row) dari DataFrame. Setiap baris mewakili satu film.                                                                             |
-
----
-
-### ✅ Kesimpulan:
-tfidf_df akan menjadi DataFrame dengan:
-- Rows: Nama-nama film (movie_label)
-- Columns: Fitur konten unik (genre + panjang judul)
-- Values: Nilai bobot TF-IDF (semakin tinggi → kata tersebut penting bagi film itu)
 
 ## 📊 Consine Similarity
 
@@ -1329,9 +1330,54 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
     - Genre
     - Rating
 
-## Evaluasi Model
+# Evaluasi Model
 
-![Gambar.41](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/model_grafik.png)
+## A. Content Based Filtering Evaluasi
+
+### Evaluasi Dengan `precision@10`
+
+![Gambar.41](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_eval1.png)
+
+![Gambar.42](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_eval2.png)
+
+![Gambar.43](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_eval3.png)
+
+### 🔍 Interpretasi Hasil: Average Precision@10: 0.0138
+- Artinya, dari setiap 10 film yang direkomendasikan oleh sistem content-based filtering:
+
+- Rata-rata hanya 1.38% di antaranya yang benar-benar disukai oleh user (film lain yang juga diberi rating ≥ 4 oleh user tersebut).
+
+- Dalam skenario nyata: rata-rata 0 hingga 1 film dari 10 adalah relevan untuk user, berdasarkan data rating sebelumnya.
+
+### 🧠 Analisis Kenapa Skornya Rendah?
+Skor precision yang rendah bisa disebabkan oleh beberapa hal:
+
+1. Fitur konten terlalu sederhana
+Hanya menggunakan genre + panjang judul → tidak cukup deskriptif untuk menangkap makna sebenarnya dari film.
+
+Banyak film dengan genre sama tapi beda suasana, subtema, atau popularitas.
+
+### Evaluasi Top N(Berdasarkan Film `Toy Story (1995)`)
+
+| No | Title | Movie Label | Content Features |
+|----|-------|-------------|------------------|
+| 0 | Space Jam (1996) | Space Jam (1996) (Adventure\|Animation\|Children\|Comedy\|Fantasy\|Sci-Fi) | Adventure Animation Children Comedy Fantasy Sci-Fi |
+| 1 | Enchanted (2007) | Enchanted (2007) (Adventure\|Animation\|Children\|Comedy\|Fantasy\|Musical) | Adventure Animation Children Comedy Fantasy Musical |
+| 2 | Surf's Up (2007) | Surf's Up (2007) (Animation\|Children\|Comedy) | Animation Children Comedy |
+| 3 | Life-Size (2000) | Life-Size (2000) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+| 4 | Anomalisa (2015) | Anomalisa (2015) (Animation\|Comedy\|Fantasy) | Animation Comedy Fantasy |
+| 5 | Peter Pan (2003) | Peter Pan (2003) (Action\|Adventure\|Children\|Fantasy) | Action Adventure Children Fantasy |
+| 6 | Ferdinand (2017) | Ferdinand (2017) (Animation\|Children\|Comedy) | Animation Children Comedy |
+| 7 | Like Mike (2002) | Like Mike (2002) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+| 8 | Wild, The (2006) | Wild, The (2006) (Adventure\|Animation\|Children\|Comedy\|Fantasy) | Adventure Animation Children Comedy Fantasy |
+| 9 | Pinocchio (2002) | Pinocchio (2002) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+
+Dalam model ini kita telah mengetahui bahwa mesin pencarian rekomendasi film ini telah berhasil melakukan tugasnya dengan sangat baik, mencari film yang paling relevan untuk pengguna, dengan tanpa data rating hanya mencari film dan genre saja pengguna dapat melihat film yang relevan untuknya.
+
+Dan dengan memanfaatkan tf-idf dan consine similarity dapat dilihat bahwa hasil yang diberikan sangat maksimal pada output data top-N diatas.
+
+## B. Collaborative Based Filtering Evaluasi
+![Gambar.44](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/model_grafik.png)
 
 ### 📌 Penjelasan Grafik
 
@@ -1349,6 +1395,24 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
     - Sistem rekomendasi lokal
     - Uji coba model embedding
     - Pembelajaran konsep rekomendasi
+
+### Evaluasi Pada Keluaran Top-N
+- Hasil Top-N(Berdasarkan Film Toy Story (1995) (Adventure Animation Children Comedy Fantasy)):
+
+| No | Film Title | Year | Genre | Rating |
+|----|------------|------|-------|--------|
+| 1 | In the Company of Men | 1997 | Comedy Drama | 5.0 |
+| 2 | Notorious | 1946 | Film-Noir Romance Thriller | 5.0 |
+| 3 | Star Wars: Episode V - The Empire Strikes Back | 1980 | Action Adventure Sci-Fi | 5.0 |
+| 4 | On the Trail of the Bremen Town Musicians | 1973 | Adventure Animation Children | 5.0 |
+| 5 | Adam's Rib | 1949 | Comedy Romance | 5.0 |
+| 6 | Mrs. Dalloway | 1997 | Drama Romance | 5.0 |
+| 7 | Man Bites Dog (C'est arrivé près de chez vous) | 1992 | Comedy Crime Drama Thriller | 5.0 |
+| 8 | Winnie the Pooh and the Blustery Day | 1968 | Animation Children Musical | 5.0 |
+| 9 | Willy/Milly | 1986 | Comedy Fantasy | 5.0 |
+| 10 | Geri's Game | 1997 | Animation Children | 5.0 |
+
+Dalam evaluasi model Collaborative Based Filter kita ini telah memenuhi semua kriteria yang disebutkan pada tahap `Business Understanding`, yang dimana sudah dapat menerapkan rekomendasi film kepada para pengguna dan mendapatka beberapa film yang akan relevan pada para pengguna.
 
 # Referensi
 [[1]]https://j-ptiik.ub.ac.id/index.php/j-ptiik/article/download/9163/4159/64730
