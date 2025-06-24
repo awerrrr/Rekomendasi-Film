@@ -26,7 +26,6 @@ Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis
 3. Menghitung kemiripan antar film dengan Cosine Similarity untuk menghasilkan daftar rekomendasi.
 4. Mengevaluasi hasil rekomendasi dengan metode manual dan contoh nyata (studi kasus pengguna yang menyukai satu film, sistem menyarankan film-film serupa).
 
-# 📝 Data Understanding
 ## ✅ Mengimport Library
 ### Built-in Libraries
 - import os
@@ -55,10 +54,14 @@ Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis
 ### Evaluation Metrics
 - from sklearn.metrics import ConfusionMatrixDisplay, accuracy_score, classification_report
 
-## 🚀 Data Loading
+# 📝 Data Understanding
+Dalam tahap pertama kita akan membaca dan menguraikan isi pada dataset yang akan kita pakai.
 
-![Gambar.1](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dl.png)
+## 📑 Data Loading & Rangkuman Data
+Tahap pertama dari data understanding ini adalah melakukan load data, mengenal data, menguraikan isi, menguraikan fitur dan melihat kondisi data.
 
+### A. Movies Dataset
+![Gambar.1](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlmov.png)
 
 ### 📌 Penjelasan Kode:
 - pd.read_csv(...) digunakan untuk membaca file CSV ke dalam DataFrame.
@@ -71,89 +74,73 @@ Pada proyek ini, akan dibangun sebuah sistem rekomendasi film sederhana berbasis
 - title : Nama film beserta tahun rilisnya.
 - genres : Genre film yang dipisahkan dengan tanda | (pipe).
 
-## 🧩 Penggabungan Datasets
-
-![Gambar.2](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_mixdf.png)
-
-
-### 🧾 Penjelasan Kolom dalam Data Gabungan (df_merged)
-Setelah kita gabungkan data ratings.csv dan movies.csv, kita punya beberapa kolom penting, yaitu:
-| Kolom         | Penjelasan                                                                                                                                           |
-|---------------|------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **userId**    | ID pengguna yang memberikan rating. Tiap user punya ID unik, misalnya `1`, `2`, dst.                                                                 |
-| **movieId**   | ID film yang dirujuk oleh pengguna. Ini juga jadi kunci untuk menghubungkan data antar tabel.                                                        |
-| **rating**    | Nilai rating yang diberikan pengguna ke film, biasanya dalam skala 0.5 – 5.0.                                                                        |
-| **timestamp** | Waktu saat rating diberikan, dalam format Unix timestamp (jumlah detik sejak 1 Januari 1970). Bisa dikonversi jadi tanggal kalau mau analisis waktu. |
-| **title**     | Judul lengkap dari film, biasanya disertai dengan tahun rilis, misalnya `Toy Story (1995)`.                                                          |
-| **genres**    | Genre dari film tersebut, bisa terdiri dari satu atau lebih genre, misalnya `Comedy`, `Action Thriller`, dll.                                        |
----
-
-### 🚨 Ini Penting!
-Dengan kolom-kolom ini, kita bisa melakukan berbagai analisis menarik, misalnya:
-- Film paling sering diberi rating tinggi.
-- Genre favorit user tertentu.
-- Perubahan selera user dari waktu ke waktu (kalau kita ubah timestamp ke format tanggal).
-- Rekomendasi film berdasarkan genre atau rating tertinggi.
-
-## Deskripsi Type Data Pada Variabel
-
-![Gambar.3](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_typed.png)
+![Gambar.2](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlmov2.png)
 
 ### 📌 Penjelasan:
 - <class 'pandas.core.frame.DataFrame'>: Menunjukkan bahwa objek ini adalah sebuah DataFrame dari pustaka pandas.
+- RangeIndex: Menandakan jumlah total baris adalah 9742, dengan indeks mulai dari 0 sampai 9741.
+- Kolom-kolom dan Tipe Datanya:
+
+| Kolom       | Non-Null Count | Tipe Data | Penjelasan                                                                        | 
+| ----------- | -------------- | --------- | --------------------------------------------------------------------------------- | 
+| `movieId`   |      9742      | `int64`   | ID film. Sama seperti `userId`, tidak ada nilai kosong.                           | 
+| `title`     |      9742      | `object`  | Judul film (tipe data `object` berarti ini berupa teks/string).                   |  
+| `genres`    |      9742      | `object`  | Genre film, juga berupa teks yang berisi satu atau lebih genre dipisahkan oleh    |    
+
+- dtypes: Merinci jenis tipe data yang digunakan: 1 kolom int64, dan 2 kolom object.
+- memory usage: Menunjukkan jumlah memori yang digunakan oleh DataFrame ini di RAM, yaitu sekitar 228.5 kilobyte.
+
+![Gambar.3](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlmov3.png)
+
+### 📚 Rangkuman Statistik:
+
+| Statistik    | movieId | Penjelasan Singkat        | 
+| ------------ | ------- | ------------------------- | 
+| **count**    | 9,742   |  Menghitung panjang baris |
+| **mean**     | 42,200  |  Rata-rata dari data      |
+| **std**      | 52,160  |  Nilai standar pada data  |
+| **min**      | 1       |  Nilai minimal pada data  |
+| **25% (Q1)** | 3,248   |  Quartil 1 pada data      |
+| **50% (Q2)** | 7,300   |  Quartil 2 pada data      | 
+| **75% (Q3)** | 76,232  |  Quartil 3 pada data      |
+| **max**      | 193,609 |  Nilai maksimum pada data |
+
+![Gambar.4](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlmov4.png)
+
+Tidak ada duplikasi data pada dataset `df_mov`.
+
+![Gambar.5](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlmov5.png)
+
+Tidak ada missing value pada dataset `df_mov`
+
+### B. Ratings Dataset
+
+![Gambar.6](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlrat.png)
+
+### 📌 Deskripsi Kolom:
+- userId   : ID unik untuk setiap pengguna.
+- movieId  : ID unik untuk setiap film.
+- rating   : Nilai rating para pengguna untuk film.
+- timestamp: Waktu pemberian nilai rating.
+
+![Gambar.7](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlrat2.png)
+
+### 📌 Penjelasan:
 - RangeIndex: Menandakan jumlah total baris adalah 100.836, dengan indeks mulai dari 0 sampai 100.835.
 - Kolom-kolom dan Tipe Datanya:
 
-| Kolom       | Non-Null Count | Tipe Data | Penjelasan                                                                        |
+| Kolom       | Non-Null Count | Tipe Data | Penjelasan                                                                        |   
 | ----------- | -------------- | --------- | --------------------------------------------------------------------------------- |
-| `userId`    | 100836         | `int64`   | ID pengguna. Semua baris memiliki nilai, tidak ada missing data.                  |
-| `movieId`   | 100836         | `int64`   | ID film. Sama seperti `userId`, tidak ada nilai kosong.                           |
-| `rating`    | 100836         | `float64` | Rating yang diberikan pengguna, berupa angka desimal.                             |
-| `timestamp` | 100836         | `int64`   | Waktu saat rating diberikan dalam format Unix timestamp.                          |
-| `title`     | 100836         | `object`  | Judul film (tipe data `object` berarti ini berupa teks/string).                   |
-| `genres`    | 100836         | `object`  | Genre film, juga berupa teks yang berisi satu atau lebih genre.                   |
+| `userId`    | 100836         | `int64`   | ID pengguna. Semua baris memiliki nilai, tidak ada missing data.                  |     
+| `movieId`   | 100836         | `int64`   | ID film. Sama seperti `userId`, tidak ada nilai kosong.                           |     
+| `rating`    | 100836         | `float64` | Rating yang diberikan pengguna, berupa angka desimal.                             |     
+| `timestamp` | 100836         | `int64`   | Waktu saat rating diberikan dalam format Unix timestamp.                          |     
 
-- dtypes: Merinci jenis tipe data yang digunakan: 1 kolom float64, 3 kolom int64, dan 2 kolom object.
-- memory usage: Menunjukkan jumlah memori yang digunakan oleh DataFrame ini di RAM, yaitu sekitar 4,6 megabyte.
+- dtypes: Merinci jenis tipe data yang digunakan: 1 kolom float64, 3 kolom int64.
+- memory usage: Menunjukkan jumlah memori yang digunakan oleh DataFrame ini di RAM, yaitu sekitar 3.1 megabyte.
 
-## Jumlah Data
+![Gambar.8](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlrat3.png)
 
-![Gambar.4](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_row.png)
-
-### 🔢 Jumlah Baris dan Kolom
-1. Total Baris (Rows): 100.836
-   - Artinya, dataset ini memiliki 100.836 entri atau data rating individual yang diberikan oleh berbagai pengguna terhadap berbagai film.
-2. Total Kolom (Columns): 6
-   - Dataset ini terdiri dari 6 kolom, yaitu:
-       - userId – ID pengguna yang memberikan rating
-       - movieId – ID film yang diberi rating
-       - rating – Nilai rating yang diberikan
-       - timestamp – Waktu saat rating diberikan (dalam Unix time)
-       - title – Judul film
-       - genres – Genre film
----
-### 🧠 Kesimpulan:
-- Dataset ini cukup besar dan lengkap, cocok untuk dilakukan eksplorasi data seperti:
-- Mengetahui genre yang paling sering ditonton
-- Film dengan rating tertinggi
-- Aktivitas pengguna berdasarkan waktu
-
-## Deskripsi Data
-
-![Gambar.5](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_des.png)
-
-
-### 📊 Statistik Deskriptif
-Fungsi describe() memberikan ringkasan statistik untuk kolom numerik dalam dataset. Berikut penjelasannya untuk masing-masing kolom:
-
-| Kolom         | Penjelasan Singkat                                                                                                                                                               |
-| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **userId**    | ID unik pengguna. Total pengguna adalah 610 (dari min=1 hingga max=610), dengan nilai rata-rata 326.                                                                             |
-| **movieId**   | ID film. Film memiliki ID dari 1 hingga 193609, meskipun jumlah film unik biasanya lebih kecil karena ada ID yang tidak terpakai.                                                |
-| **rating**    | Rating yang diberikan oleh pengguna, mulai dari **0.5 (min)** hingga **5.0 (max)**, dengan rata-rata sekitar **3.50**. Ini menunjukkan kebanyakan rating berada di tengah (3-4). |
-| **timestamp** | Waktu saat rating diberikan, dalam format Unix timestamp (jumlah detik sejak 1 Januari 1970). Perlu dikonversi ke format tanggal agar lebih mudah dibaca.                        |
-
----
 ### 📚 Rangkuman Statistik:
 
 | Statistik    | userId  | movieId | rating  | timestamp (Unix)                   |
@@ -167,14 +154,29 @@ Fungsi describe() memberikan ringkasan statistik untuk kolom numerik dalam datas
 | **75% (Q3)** | 477     | 8,122   | 4.0     | 1.435.994.000                      |
 | **max**      | 610     | 193,609 | 5.0     | 1.537.799.000 (sekitar tahun 2018) |
 
-## 🎯 Insight dari Data Understanding
+![Gambar.9](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlrat4.png)
+
+Tidak ada duplikasi data pada dataset `df_rat`
+
+![Gambar.10](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dlrat5.png)
+
+Tidak ada missing value pada dataset `df_rat`
+
+### 🎯 Insight Data Loading & Rangkuman Data
 1. Volume dan Kelengkapan Data
-- Dataset terdiri dari 100.836 baris dan 6 kolom, dengan tidak ada missing value — artinya data bersih dan siap dianalisis.
-- Kolom-kolomnya menggabungkan informasi penting:
-    - siapa yang menonton
-    - film apa yang ditonton
-    - rating-nya, kapan menontonnya
-    - serta genre film.
+    1. `df_mov` (datasets movies)
+       - Dataset terdiri dari 9.742 baris dan 3 kolom, dengan tidak ada missing value — artinya data bersih dan siap dianalisis.
+       - Kolom-kolomnya berisi informasi penting:
+         - Judul dari film.
+         - ID dari film(keperluan nilai unik).
+         - serta genre film.
+    2. `df_rat` (datasets ratings)
+       - Dataset terdiri dari 100.836 baris dan 4 kolom, dengan tidak ada missing value — artinya data bersih dan siap dianalisis.
+       - Kolom-kolomnya berisi informasi penting:
+         - ID dari pengguna yang telah memberi nilai rating pada film.
+         - ID dari film.
+         - Nilai rating yang telah pengguna berikan.
+         - Serta tanggal pemberian rating yang dilakukan pengguna.
 
 2. Distribusi Rating
 - Rata-rata rating yang diberikan pengguna adalah 3.50 (dari skala 0.5 sampai 5).
@@ -198,34 +200,26 @@ Kolom timestamp menunjukkan data mencakup periode panjang (sekitar 1996–2018),
     - Perilaku user tertentu dalam memberi rating.
     - Pola rating berdasarkan tahun/genre.
 
-# 🧼 Data Cleaning
-## 📑 Duplikasi Data
 
-![Gambar.6](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dup.png)
+## Exploratory Data  Analysis (EDA)
 
-Dalam dataset ini tidak ditemukan adanya duplikasi data.
+### Memisahkan Kolom Genre
 
-## 🆘 Missing Value
+![Gambar.11](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_gen.png)
 
-![Gambar.7](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_mis.png)
-
-Dalam dataset ini tidak ditemukan adanya missing value.
-
-# Exploratory Data  Analysis (EDA)
-## Memisahkan Kolom Genre
-
-![Gambar.8](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_gen.png)
+### 🎯 Tujuan
+Untuk keperluan memvisualisasikan distribusi film per genre pada tahap selanjutnya, hal ini dikarenakan adanya beberapa genre dalam satu film sehingga mengharuskan kita untuk melakukan pemisahan genre.
 
 ### 🧩 Penjelasan Kode:
-1. `df_merged['genres_split'] = df_merged['genres'].str.split('|'): `
+1. `df_mov['genres_split'] = df_mov['genres'].str.split('|'): `
 Membagi kolom genres menjadi list genre, karena beberapa film memiliki lebih dari satu genre.
 
-2. `genres_exploded = df_merged.explode('genres_split'): `
+2. `genres_ex = df_mov.explode('genres_split'): `
 Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehingga satu film dengan 3 genre akan muncul 3 kali (satu per genre).
 
-## Grafik Distribusi Jumlah Film per Genre
+### Grafik Distribusi Jumlah Film per Genre
 
-![Gambar.9](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_1.png)
+![Gambar.12](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_1.png)
 
 ### 🧩 Penjelasan Kode:
 `sns.countplot(..., y='genres_split', order=..., palette='viridis'): `
@@ -250,9 +244,33 @@ Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehin
 - Genre seperti War, IMAX, dan Film-Noir tergolong niche (khusus), sehingga cocok jika ingin eksplorasi selera pengguna unik.
 - Visualisasi ini sangat berguna untuk analisis preferensi genre, baik secara umum maupun per user nanti.
 
-## Distribusi Panjang Judul Film
+### Korelasi Antar Fitur Numerik
 
-![Gambar.10](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_2.png)
+![Gambar.13](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/heatmapnew.png)
+
+### 🎯 Tujuan:
+Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom numerik dalam dataset df_rat.
+
+---
+#### 📌 Interpretasi Heatmap:
+
+| Kolom                      | Korelasi yang Terlihat      | Penjelasan Singkat                                                                                  |
+| -------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------- |
+| **userId & rating**        | -0.05 (lemah negatif)       | Tidak ada hubungan kuat antara user ID dan rating yang diberikan.                                   |
+| **movieId & timestamp**    | **0.50 (moderat positif)**  | Film dengan ID lebih besar (film lebih baru) cenderung mendapatkan rating di waktu yang lebih baru. |
+| **timestamp & rating**     | -0.01 (tidak signifikan)    | Waktu pemberian rating tidak terlalu memengaruhi besarnya rating.                                   |
+
+---
+💡 Kesimpulan:
+- Korelasi antar kolom numerik dalam dataset ini cenderung lemah atau tidak signifikan secara statistik.
+- Satu-satunya korelasi yang cukup mencolok adalah antara movieId dan timestamp (0.50), yang masuk akal karena film dengan ID lebih tinggi umumnya lebih baru, dan mendapat rating di waktu yang lebih modern.
+- Korelasi rendah antara rating dengan kolom lain menunjukkan bahwa preferensi pengguna tidak mudah diprediksi hanya dengan fitur numerik sederhana ini.
+  > Tidak disarankan untuk melakukan tahap ini pada dataset `df_mov`, karena ia hanya mempunyai satu kolom numerik saja.
+
+
+### Distribusi Panjang Judul Film
+
+![Gambar.14](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_2.png)
 
 ### 📌 Insight dari Grafik:
 - Sebagian besar judul film memiliki panjang antara 15 hingga 30 karakter.
@@ -267,159 +285,137 @@ Menggunakan explode() untuk membuat setiap genre menjadi baris tersendiri, sehin
   - Apakah judul yang lebih panjang cenderung mendapat rating lebih rendah/tinggi?
   - Apakah genre tertentu cenderung memiliki judul yang lebih panjang?
 
-## Korelasi Antar Fitur Numerik
+### Distribusi dan Statistik Rating
 
-![Gambar.11](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_kor.png)
+![Gambar.15](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/graf_disrat.png)
 
-### 🎯 Tujuan:
-Heatmap ini menunjukkan hubungan linear (korelasi Pearson) antara kolom-kolom numerik dalam dataset gabungan df_merged.
+### 📊 **Distribusi Rating (Plot Kiri)**
 
----
-### 📌 Interpretasi Heatmap:
-| Kolom                      | Korelasi yang Terlihat      | Penjelasan Singkat                                                                                  |
-| -------------------------- | --------------------------- | --------------------------------------------------------------------------------------------------- |
-| **userId & rating**        | -0.05 (lemah negatif)       | Tidak ada hubungan kuat antara user ID dan rating yang diberikan.                                   |
-| **movieId & timestamp**    | **0.50 (moderat positif)**  | Film dengan ID lebih besar (film lebih baru) cenderung mendapatkan rating di waktu yang lebih baru. |
-| **title\_length & rating** | 0.05 (sangat lemah positif) | Judul panjang tidak terlalu memengaruhi rating yang diberikan.                                      |
-| **timestamp & rating**     | -0.01 (tidak signifikan)    | Waktu pemberian rating tidak terlalu memengaruhi besarnya rating.                                   |
+Dari grafik distribusi rating, dapat diamati beberapa pola penting:
 
----
-💡 Kesimpulan:
-- Korelasi antar kolom numerik dalam dataset ini cenderung lemah atau tidak signifikan secara statistik.
-- Satu-satunya korelasi yang cukup mencolok adalah antara movieId dan timestamp (0.50), yang masuk akal karena film dengan ID lebih tinggi umumnya lebih baru, dan mendapat rating di waktu yang lebih modern.
-- Korelasi rendah antara rating dengan kolom lain menunjukkan bahwa preferensi pengguna tidak mudah diprediksi hanya dengan fitur numerik sederhana ini.
+**Karakteristik Distribusi:**
+- **Rating 4.0 mendominasi** dengan jumlah tertinggi (~27,000 rating), menunjukkan bahwa sebagian besar pengguna memberikan rating positif
+- **Rating 3.0 dan 5.0** juga cukup tinggi (~20,000 dan ~13,000), mengindikasikan polarisasi ke arah rating positif
+- **Rating rendah (0.5-2.5)** relatif jarang diberikan, dengan rating 0.5 paling sedikit (~1,500)
 
-## Rata-rata Rating dan Total Review per Genre
+**Insight Utama:**
+- **Positive Bias**: Distribusi menunjukkan kecenderungan pengguna memberikan rating tinggi (3.0-5.0)
+- **Rating 4.0 sebagai "Default Choice"**: Kemungkinan besar rating 4.0 menjadi pilihan umum untuk film yang "cukup bagus"
+- **Skewness**: Distribusi condong ke kanan (positively skewed), menunjukkan lebih banyak rating tinggi daripada rendah
 
-![Gambar.12](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_avg.png)
+### 📈 **Statistik Rating (Plot Kanan - Box Plot)**
 
+Box plot memberikan gambaran statistik yang komprehensif:
 
-### 🎬 Analisis Rating dan Jumlah Review berdasarkan Genre:
-- Visualisasi ini menggambarkan dua hal penting dalam industri film berdasarkan genre:
-    - Rata-rata rating per genre
-    - Total jumlah review per genre
----
-### 📊 Grafik Kiri – Average Rating per Genre
-- Menampilkan rata-rata rating film berdasarkan genre.
-- Genre dengan rating tertinggi:
-  - Film-Noir, Documentary, War → rata-rata rating mendekati atau di atas 3.8.
-- Genre dengan rating terendah:
-  - Horror, Comedy, Children → mendekati 3.3 - 3.4.
+**Measures of Central Tendency:**
+- **Median (garis tengah)**: Berada di sekitar 3.5-4.0, mengkonfirmasi bahwa sebagian besar rating adalah positif
+- **Quartile Range**: Kotak menunjukkan 50% data terpusat di antara rating ~3.0-4.0
 
-> 👉 Insight: Genre seperti Documentary dan Film-Noir mungkin memiliki audiens yang lebih khusus dan serius, sehingga memberi rating lebih tinggi.
----
-### 📈 Grafik Kanan – Total Number of Reviews per Genre
-- Menampilkan jumlah total review yang diberikan per genre.
-- Genre dengan jumlah review terbanyak:
-  - Drama, Comedy, dan Action.
-- Genre dengan jumlah review sangat sedikit:
-  - IMAX, Film-Noir, Musical.
+**Variabilitas Data:**
+- **Whiskers**: Menunjukkan range data dari ~1.5 hingga 5.0
 
-> 👉 Insight: Genre populer seperti Drama dan Comedy memang umum disukai, sedangkan genre Musical, Film-Noir, atau Western memiliki pangsa pasar yang lebih kecil.
----
-### 🎯 Kesimpulan:
-| Genre          | Rata-rata Rating Tinggi | Jumlah Review Tinggi | Catatan                                       |
-| -------------- | ----------------------- | -------------------- | --------------------------------------------- |
-| Film-Noir      | ✅                       | ❌                    | Disukai secara kualitas, tapi jarang ditonton |
-| Drama          | ✅                       | ✅                    | Populer dan dinilai baik                      |
-| Horror         | ❌                       | ⚠️                   | Kurang disukai, tapi cukup sering ditonton    |
-| Documentary    | ✅                       | ❌                    | Disukai oleh niche audiens                    |
-| Comedy, Action | ⚠️                      | ✅                    | Populer, tapi rating relatif rendah           |
+**Interpretasi Statistik:**
+- **Distribusi yang stabil**: Mayoritas data terkumpul di rating 3.0-4.0 (zona positif)
+- **Low variance pada rating tinggi**: Sedikit variasi di rating 4.0-5.0
 
-## Top 10 Genres & Movies
+### 🎯 **Kesimpulan dan Implikasi**
 
-![Gambar.13](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/eda_top10.png)
+1. **User Behavior**: Pengguna cenderung memberikan rating positif, mungkin karena mereka hanya me-rating film yang mereka sukai
+2. **Data Quality**: Distribusi yang skewed ini normal untuk sistem rekomendasi, di mana pengguna self-select film yang akan mereka tonton
+3. **Business Insight**: Rating 4.0 bisa dijadikan threshold untuk "recommended movies"
+4. **Model Implications**: Perlu mempertimbangkan class imbalance saat membangun model rekomendasi
 
 
-### 🎯Tujuan:
-Visualisasi ini menyoroti genre dan film dengan kualitas terbaik berdasarkan rata-rata rating tertinggi dari seluruh dataset.
+# Data Preparation
 
----
-### 📊 Grafik Kiri – Top 10 Genre dengan Rata-Rata Rating Tertinggi
-Menampilkan 10 genre teratas dengan rata-rata rating film tertinggi.
-
-Genre teratas:
-- Film-Noir ⭐ (paling tinggi)
-- War
-- Documentary
-- Crime
-- Drama
-
-> 👉 Insight: Genre-genre seperti Film-Noir, War, dan Documentary meskipun mungkin tidak terlalu populer secara kuantitas, tetapi sangat diapresiasi dari segi kualitas oleh para penonton.
----
-#### 🎥 Grafik Kanan – Top 10 Film dengan Rata-Rata Rating Tertinggi
-Menampilkan 10 film dengan rating rata-rata paling tinggi dari seluruh dataset.
-
-Semua film di atas memiliki rating hampir sempurna (mendekati 5.0).
-
-- Contoh film:
-- 'Salem's Lot (2004)
-- 12 Angry Men (1997)
-- 12 Chairs (1976)
-- A Perfect Day (2015)
-
-> 👉 Insight: Banyak dari film top ini adalah film klasik atau dokumenter, dan bukan blockbuster komersial. Hal ini mengindikasikan adanya penghargaan tinggi terhadap kualitas narasi, akting, dan pengaruh budaya.
-
----
-### 📌 Catatan Tambahan
-| Genre/Film Tertinggi | Tipe Data | Rating |
-| -------------------- | --------- | ------ |
-| Film-Noir            | Genre     | ±3.9   |
-| 'Salem's Lot (2004)  | Film      | 5.0    |
-
-
-### 🎯 INSIGHT UTAMA DARI EDA
-1. 🎬 Genre Tertentu Mendapat Rating Lebih Tinggi
-   - Genre seperti Film-Noir, War, dan Documentary memiliki rata-rata rating tertinggi.
-   - Meskipun bukan genre paling populer (dari jumlah review), genre-genre ini menunjukkan bahwa kualitas film di dalamnya lebih dihargai oleh penonton.
-   - Ini menunjukkan adanya segmen pasar khusus yang sangat menghargai film dengan kualitas sinematik, naratif, atau nilai historis tinggi.
-
-> 📌 Implikasi: Jika ingin fokus pada kualitas daripada kuantitas penonton, film bergenre ini patut dipertimbangkan.
-
----
-2. 👥 Film Populer Tidak Selalu Mendapat Rating Tinggi
-   - Beberapa genre seperti Action, Comedy, atau Sci-Fi, meskipun mungkin lebih populer dari segi jumlah review, memiliki rating rata-rata yang lebih rendah.
-   - Genre-genre tersebut mungkin lebih bersifat menghibur, namun kurang dinilai tinggi dari sisi kualitas oleh reviewer.
-
-> 📌 Implikasi: Populer ≠ Berkualitas (menurut penonton). Penting untuk menyeimbangkan tujuan komersial dan kualitas produksi.
-
----
-3. 📈 Film-Film Top Punya Rating Hampir Sempurna
-   - Film-film seperti 'Salem's Lot (2004) atau 12 Angry Men (1997) memiliki rating hampir sempurna (5.0).
-   - Banyak dari film ini adalah film klasik, dokumenter, atau film dengan pendekatan naratif dan sinematik yang kuat.
-
-> 📌 Implikasi: Film berkualitas tinggi yang kuat di aspek cerita dan akting bisa mempertahankan rating tinggi dalam jangka panjang.
-
----
-4. 💬 Distribusi Review Tidak Merata antar Genre
-   - Genre seperti Drama dan Comedy mendapatkan jumlah review yang sangat tinggi, namun tidak selalu menghasilkan rating tinggi.
-   - Sebaliknya, genre seperti Film-Noir atau War memiliki jumlah review lebih sedikit tetapi rating sangat tinggi.
-
-> 📌 Implikasi: Genre-genre yang lebih niche memiliki komunitas kecil tapi sangat loyal dan kritis.
-
----
-5. 🔍 Multigenre Penting untuk Diperhitungkan
-   - Karena kamu melakukan .str.split('|') dan .explode(), maka terlihat bahwa satu film bisa memiliki lebih dari satu genre.
-   - Genre campuran dapat mempengaruhi persepsi rating (misalnya: Drama + War vs Drama + Romance).
-
-> 📌 Implikasi: Saat mengklasifikasikan film atau merekomendasikan, pertimbangkan komposisi genre campuran, bukan hanya satu label utama.
-
----
-6. 📊 Kesenjangan antara Jumlah Review dan Rating
-   - Ada genre dengan review terbanyak (misalnya Drama atau Action) tapi rating tidak tinggi.
-   - Ini bisa menunjukkan bahwa semakin banyak penonton, semakin besar variasi preferensi dan kritik (fenomena umum dalam film blockbuster).
-
-> 📌 Implikasi: Film mainstream cenderung mendapatkan opini yang lebih beragam — strategi promosi & target audiens harus memperhitungkan hal ini.
-
-
-# Modelling 
-## Content Based Filtering
+## A. Content Based Filtering Preparation
 > Teknik sistem rekomendasi yang menyarankan item kepada pengguna berdasarkan kesamaan antara konten item tersebut dan preferensi masa lalu pengguna . Ia menganalisis atribut item (seperti genre, kata kunci, atau tag) dan aktivitas pengguna (seperti item yang mereka sukai, beri peringkat, atau beli) untuk membangun profil pengguna dan merekomendasikan item serupa.
-## A. Data Preparation
 
-## Membuat `Dataset_Content`
+### Penggabungan Dataset
 
-![Gambar.14](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_datacontent.png)
+![Gambar.16](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_dfmerge.png)
+
+### 📊 **Penjelasan Output `df_merged`**
+
+Tabel hasil menunjukkan penggabungan sukses antara dataset rating (`df_rat`) dan dataset movie (`df_mov`) berdasarkan kolom `movieId`. Setiap baris sekarang berisi informasi lengkap tentang:
+
+**Kolom dari Dataset Rating:**
+- `userId`: ID pengguna yang memberikan rating
+- `movieId`: ID film yang dirating  
+- `rating`: Nilai rating (1.0-5.0)
+- `timestamp`: Waktu pemberian rating
+
+**Kolom dari Dataset Movie:**
+- `title`: Judul lengkap film dengan tahun rilis
+- `genres`: Genre film dalam format string (dipisahkan "|")
+- `genres_split`: Genre yang sudah dipecah menjadi list
+- `title_length`: Panjang karakter judul film
+
+### 🚨 **Mengapa Penggabungan Dataset Ini Penting?**
+
+#### 1. **Analisis Komprehensif**
+
+```
+Sebelum: Rating tanpa konteks → "User 1 memberi rating 4.0 pada movie 1"
+Sesudah: Rating dengan konteks → "User 1 memberi rating 4.0 pada Toy Story (1995) [Adventure|Animation]"
+```
+
+#### 2. **Kemampuan Analisis yang Diperluas**
+
+**A. Analisis per Genre:**
+- Dapat menganalisis preferensi rating berdasarkan genre
+- Identifikasi genre mana yang mendapat rating tertinggi/terendah
+- Pola rating user untuk kategori film tertentu
+
+**B. Analisis Temporal:**
+- Melihat evolusi rating untuk film dari era yang berbeda
+- Tren rating berdasarkan tahun rilis film
+
+**C. Content-Based Analysis:**
+- Menganalisis korelasi antara karakteristik film (genre, judul) dengan rating
+- Membangun profil preferensi user berdasarkan konten film
+
+#### 3. **Kebutuhan untuk Sistem Rekomendasi**
+
+**Collaborative Filtering + Content-Based:**
+```python
+# Sekarang bisa melakukan:
+- Rekomendasi berdasarkan genre favorit user
+- Analisis "Users who like Action movies also like..."
+- Hybrid recommendation (rating + content features)
+```
+
+#### 4. **Business Intelligence yang Lebih Kaya**
+
+**Contoh Analisis yang Mungkin:**
+- Genre mana yang paling populer di kalangan user aktif?
+- Apakah film dengan judul panjang cenderung mendapat rating lebih tinggi?
+- Bagaimana distribusi rating untuk film Comedy vs Drama?
+
+#### 5. **Preparasi Data untuk Machine Learning**
+
+**Feature Engineering:**
+- `genres_split` memungkinkan one-hot encoding untuk genre
+- `title_length` sebagai feature numerik
+- Kombinasi rating pattern dengan content features
+
+### 🎯 **Manfaat Praktis Penggabungan**
+
+| **Sebelum Merge** | **Setelah Merge** |
+|-------------------|-------------------|
+| Rating analysis terbatas pada pola numerik | Rating analysis berdasarkan karakteristik film |
+| Tidak bisa segmentasi berdasarkan konten | Bisa analisis preferensi per genre/kategori |
+| Rekomendasi hanya berdasarkan similarity rating | Rekomendasi hybrid (rating + content) |
+| Insight terbatas untuk business decision | Rich insight untuk content strategy |
+
+### 📋 **Kesimpulan**
+
+Penggabungan ini adalah langkah fundamental untuk **analisis holistik** yang menggabungkan **behavioral data** (rating) dengan **content metadata** (genre, title), membuka peluang untuk insight yang lebih mendalam dan akurat dalam memahami preferensi pengguna dan karakteristik konten.
+
+
+### Membuat `Dataset_Content`
+
+![Gambar.17](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_datacontent.png)
 
 ### 🎯 Tujuan Utama Kode
 Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fitur-fitur deskriptif dari film, seperti:
@@ -474,7 +470,7 @@ Mempersiapkan dataset konten film (untuk Content-Based Filtering) yang berisi fi
 
 ## Membuat List Dari Kolom-kolom Penting Pada `dataset_content`
 
-![Gambar.15](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentfeatures.png)
+![Gambar.18](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentfeatures.png)
 
 ### 🎯 Tujuan Kode
 Kode ini bertujuan untuk:
@@ -528,7 +524,7 @@ Kode ini bertujuan untuk:
 
 ## 📦 Membuat Dataset `content_based_data`
 
-![Gambar.16](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentbased.png)
+![Gambar.19](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_contentbased.png)
 
 Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang akan digunakan sebagai dasar dalam sistem content-based recommendation.
 
@@ -558,233 +554,7 @@ Pada bagian ini, kita membentuk DataFrame baru bernama content_based_data yang a
 - Dengan data ini, kita bisa membangun sistem rekomendasi yang menjawab:
 > "Jika pengguna menyukai film X, film apa yang mirip dari segi kontennya?"
 
-## 📐 Penerapan TF-IDF dan Cosine Similarity
-
-![Gambar.17](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_penerapanconsine.png)
-
-1. 📚 Penjelasan
-
-| Langkah                  | Penjelasan                                                                                                                                            |
-| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `TfidfVectorizer()`      | Membuat objek untuk mengubah teks menjadi vektor numerik berbasis frekuensi dan kekhasan kata (TF-IDF).                                               |
-| `fit_transform(...)`     | Menerapkan TF-IDF pada kolom `content_features`, menghasilkan matriks numerik berdimensi `(9724, fitur unik)`.                                        |
-| `cosine_similarity(...)` | Menghitung kemiripan (cosine similarity) antar semua film berdasarkan vektor kontennya. Hasilnya adalah **matriks simetri** berukuran `(9724, 9724)`. |
-
----
-2. 📏 Hasil:
-`Cosine similarity matrix shape: (9724, 9724)`
-
-Artinya:
-- Kita memiliki 9724 film unik.
-- Matriks ini menunjukkan tingkat kemiripan antar setiap pasang film.
-- Nilai kemiripan berkisar antara 0 (tidak mirip) hingga 1 (sangat mirip).
-
-## 📊 Matriks Cosine Similarity
-
-![Gambar.18](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_matrixconsine.png)
-
-### 🧩 Tujuan:
-Matriks ini akan digunakan untuk membuat sistem rekomendasi, dengan cara memilih film yang memiliki nilai cosine similarity tertinggi terhadap film yang dipilih pengguna.
-
----
-### 🎯 Penjelasan:
-- Matriks cosine similarity berukuran (9724, 9724).
-- Setiap baris dan kolom merepresentasikan satu film.
-- Nilai dalam matriks menunjukkan tingkat kemiripan antara dua film berdasarkan fitur kontennya (genre dan panjang judul).
-
----
-### 📌 Arti Nilai:
-- Nilai 0.0 artinya tidak ada kemiripan antara dua film.
-- Nilai 0.37, 0.42, dan 0.45 menunjukkan bahwa film di baris tersebut cukup mirip dengan film lain (nilai mendekati 1 berarti sangat mirip).
-- Diagonal utama (yang tidak ditampilkan di sini) selalu bernilai 1.0 karena setiap film pasti 100% mirip dengan dirinya sendiri.
-
----
-### 📦 Contoh:
-Jika cosine_sim[2, 8745] = 0.37278331, maka:
-- Film ke-3 dan film ke-8746 memiliki kemiripan konten sebesar ~37.3%.
-- Ini bisa jadi karena mereka memiliki genre yang sama atau panjang judul yang mirip.
-
-## Mengubah TF-IDF Matrix Menjadi Dataframe
-
-![Gambar.19](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_ubahtfidf.png)
-
-### 💡 Tujuan:
-- Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
-- Berguna untuk mengecek atau men-debug nilai TF-IDF tiap film secara manual.
-- Bisa juga dipakai untuk visualisasi atau analisis fitur konten lebih lanjut (misalnya: genre mana yang paling banyak muncul atau paling kuat bobotnya di film tertentu).
-
----
-### 📚 Penjelasan:
-
-| Komponen                                  | Penjelasan                                                                                                                                                                        |
-| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `tfidf_matrix`                            | Matriks hasil transformasi `TfidfVectorizer`, berisi bobot TF-IDF dari setiap fitur (genre + panjang judul) untuk tiap film.                                                      |
-| `.todense()`                              | Mengubah sparse matrix menjadi dense (matriks penuh), agar bisa dibaca sebagai tabel.                                                                                             |
-| `tfidf.get_feature_names_out()`           | Mengambil semua **fitur** (kata-kata unik dari `content_features`, misalnya: `Action`, `Comedy`, `Thriller`, `16`, dll) yang dipakai dalam TF-IDF. Ini akan jadi kolom DataFrame. |
-| `index=content_based_data["movie_label"]` | Menjadikan **label film** sebagai indeks baris (row) dari DataFrame. Setiap baris mewakili satu film.                                                                             |
-
----
-
-### ✅ Kesimpulan:
-tfidf_df akan menjadi DataFrame dengan:
-- Rows: Nama-nama film (movie_label)
-- Columns: Fitur konten unik (genre + panjang judul)
-- Values: Nilai bobot TF-IDF (semakin tinggi → kata tersebut penting bagi film itu)
-
-## B. Consine Similarity
-
-### 📌 Apa Itu cosine_similarity?
-`cosine_similarity` menghitung kemiripan antara dua vektor berdasarkan sudut di antara mereka, dengan nilai antara:
-- 1.0 → dua item identik
-- 0.0 → dua item tidak mirip sama sekali
-
-Semakin tinggi nilainya, semakin mirip dua film tersebut dari segi konten (genre + panjang judul).
-
----
-### 🎯 Kegunaan Matriks Ini:
-- Untuk sistem rekomendasi berbasis konten (Content-Based Filtering).
-- Saat user menyukai film tertentu (misalnya film ke-0), kita bisa ambil film lain yang punya nilai similarity tertinggi terhadap film tersebut.
-
-![Gambar.20](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinemain.png)
-
----
-### 🧮 Penjelasan Matriks Hasil:
-Matriks cosine_sim adalah matriks simetris berukuran (9724, 9724), karena membandingkan setiap film dengan semua film lainnya, termasuk dirinya sendiri.
-
-Misalnya:
-- cosine_sim[0][0] = 1.0 → film ke-0 dibanding dengan dirinya sendiri (selalu 1).
-- cosine_sim[0][1] = 0.08528593 → film ke-0 dan film ke-1 miripnya 8.5% secara konten.
-- cosine_sim[2][973] = 0.31919541 → film ke-2 dan film ke-973 memiliki tingkat kemiripan 31.9%.
-- Banyak nilai 0.0 karena genre atau panjang judul tidak sama → tidak mirip.
-
----
-### 📝 Kesimpulan:
-Matriks cosine_sim berisi skor kemiripan antar film berdasarkan fitur konten (genre + panjang judul) yang telah diubah ke bentuk TF-IDF. Dan ini adalah dasar utama untuk membangun sistem rekomendasi film otomatis berbasis konten.
-
-## ⚙️ Penerapan Consine Similarity
-
-![Gambar.21](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinesubmain.png)
-
-### 🎯 Tujuan:
--  untuk membuat sistem rekomendasi film.
--  Ketika user memilih 1 film, kita bisa:
-  - Ambil baris dari cosine_sim_df
-  - Urutkan film yang paling mirip
-  - Rekomendasikan 5–10 film teratas
-
----
-### 📌 Penjelasan Setiap Bagian:
-1. cosine_sim = cosine_similarity(tfidf_matrix)
-- Menghitung kemiripan (cosine similarity) antar semua film berdasarkan content_features (genre + panjang judul).
-- Output: array (9724, 9724) berisi nilai kemiripan antara semua kombinasi film.
-
-2. cosine_sim_df = pd.DataFrame(...)
-- Membuat DataFrame kemiripan antar film dengan:
-    - Index = nama lengkap film (movie_label)
-    - Kolom = juga nama lengkap film
-- Hasilnya:
-
-| movie\_label ↓ | Film A | Film B | Film C | ... |
-| -------------- | ------ | ------ | ------ | --- |
-| Film A         | 1.0    | 0.23   | 0.0    | ... |
-| Film B         | 0.23   | 1.0    | 0.09   | ... |
-| Film C         | 0.0    | 0.09   | 1.0    | ... |
-
-3. cosine_sim_df.sample(5, axis=1).sample(15, axis=0)
-- Menampilkan 5 kolom acak (film) dan 15 baris acak (film).
-- Tujuannya untuk melihat cuplikan dari matriks kemiripan tanpa menampilkan semuanya.
-- Output:
-
-|movie\_label ↓       | Strictly Sexual | Firefox | Computer Wore Tennis Shoes | Rise of the Planet of the Apes | Zombie Strippers |
-| -------------------- | --------------- | ------- | -------------------------- | ------------------------------ | ---------------- |
-| Swimming with Sharks | 0.238           | 0.0     | 0.106                      | 0.075                          | 0.126            |
-| Highway 61           | 0.154           | 0.0     | 0.126                      | 0.0                            | 0.151            |
-| Days of Thunder      | 0.837           | 0.163   | 0.0                        | 0.214                          | 0.0              |
-
-- Penjelasan:
-  - Semua nilai berkisar antara 0 - 1:
-  - 1.0 → identik (film dengan dirinya sendiri).
-    > 0.5 → cukup mirip dari sisi genre dan panjang judul.
-  - 0.0 → tidak ada kemiripan (tidak ada kata/fitur yang sama di TF-IDF-nya).
-
-> Contoh: Days of Thunder punya similarity tinggi (0.837) dengan Strictly Sexual, berarti mereka punya genre atau panjang judul yang sangat mirip.
-
-## 🧠 Membuat Fungsi `content_based_movie_recommendations`
-
-![Gambar.22](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_systemreq.png)
-
-### 🎯 Tujuan:
-Memberikan rekomendasi film berdasarkan konten (genre + panjang judul) menggunakan cosine similarity.
-
----
-### 🔍 Penjelasan Setiap Baris:
-1. 🟩 match = items[items["title"].str.lower() == title.lower()]
-- Mencari judul film yang cocok dari parameter title.
-- .str.lower() untuk menghindari perbedaan huruf kapital saat mencocokkan.
-
-2. 🟥 if match.empty: return ...
-Jika judul tidak ditemukan dalam data, maka fungsi akan mengembalikan pesan error.
-
-3. 🟦 movie_label = match.iloc[0]["movie_label"]
-- Mengambil label lengkap dari film yang ditemukan.
-- Label ini digunakan untuk mengambil skor kemiripan dari cosine_sim_df.
-
-4. 🟧 sim_scores = similarity_data[movie_label].sort_values(ascending=False)
-- Mengambil seluruh nilai similarity dari film tersebut ke semua film lain.
-- Diurutkan dari paling mirip ke paling tidak mirip (nilai cosine tertinggi ke rendah).
-
-5. 🟨 top_indices = sim_scores.iloc[1:k+1].index
-- Mengambil k film paling mirip.
-- iloc[1:k+1] artinya mulai dari indeks ke-1 agar tidak mengambil film itu sendiri (indeks ke-0 = film itu sendiri, similarity-nya pasti 1.0).
-
-6. 🟫 return items[items["movie_label"].isin(top_indices)].reset_index(drop=True)
-- Mengembalikan k film yang paling mirip berdasarkan movie_label.
-- reset_index(drop=True) agar indeks rapi saat ditampilkan.
----
-### 📚 Ringkasan Fungsi
-
-| Komponen             | Fungsi                                                       |
-| -------------------- | ------------------------------------------------------------ |
-| **title**            | Judul film yang dimasukkan user                              |
-| **similarity\_data** | Matriks cosine similarity antar film                         |
-| **items**            | Dataset yang memuat info film dan fitur kontennya            |
-| **k**                | Jumlah film rekomendasi yang ingin ditampilkan (default: 10) |
-
-## 🔎 Contoh Pencarian Dataset Content
-
-![Gambar.23](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_pencariandataset.png)
-
-### 🎯 Tujuan:
-Mencari semua film dalam dataset yang judulnya mengandung kata "Toy Story", baik huruf besar maupun kecil (case=False).
-
---- 
-### ✅ Insight:
-
-| Aspek                | Penjelasan                                                                                                                                                                                                            |
-| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Jumlah film**      | Ada **3 film** yang memiliki judul dengan "Toy Story", yaitu seri pertama, kedua, dan ketiga.                                                                                                                         |
-| **Genre**            | Ketiganya memiliki **genre yang identik**, yaitu: `Adventure`, `Animation`, `Children`, `Comedy`, dan `Fantasy`.                                                                                                      |
-| **Rating rata-rata** | Rating-nya relatif **tinggi dan konsisten**, dengan skor **4.0** hingga **4.5**, menunjukkan bahwa film ini sangat disukai pengguna.                                                                                  |
-| **Panjang judul**    | `Toy Story (1995)` memiliki panjang **16 karakter**, sedangkan dua film lainnya **18 karakter**. Ini masuk dalam fitur `title_length`.                                                                                |
-| **Content features** | Ketiganya memiliki `content_features` yang hampir identik (kombinasi genre + panjang judul), sehingga kemungkinan besar akan **saling merekomendasikan** jika digunakan pada sistem **content-based recommendation**. |
-
-
-## 🏃‍♂️ Menjalankan Fungsi `content_based_movie_recommendations()`
-
-![Gambar.24](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runcbm.png)
-
-### 🎯 Tujuan:
-Fungsi `content_based_movie_recommendations()` mencari film yang paling mirip secara konten (genre dan panjang judul) dengan film "Toy Story (1995)", berdasarkan cosine similarity dari representasi TF-IDF.
-
----
-### ✅ Insight:
-- Sistem ini belum mempertimbangkan plot cerita, aktor, atau visual, hanya berdasarkan genre dan panjang judul (konten eksplisit).
-- Kalau kamu ingin meningkatkan akurasi rekomendasi, bisa:
-  - Menambahkan sinopsis/overview film
-  - Menambahkan sutradara, pemeran, atau tahun rilis
-  - Menggabungkan metode ini dengan collaborative filtering
-
-## Collaborative-based Filtering
+## B. Collaborative-based Filtering Preparation
 
 ### 📚Apa itu Collaborative Filtering?
 Collaborative Filtering (CF) merekomendasikan item berdasarkan interaksi pengguna lain.
@@ -801,11 +571,9 @@ Collaborative Filtering (CF) merekomendasikan item berdasarkan interaksi penggun
 - Cari item (film) yang mirip berdasarkan pola rating pengguna.
 - Rekomendasikan film yang mirip dengan film yang pernah disukai user.
 
-## A. Data Preparation
-
 ## 🔖 Persiapan `content_features`
 
-![Gambar.25](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_collab.png)
+![Gambar.20](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_collab.png)
 
 ### 🎯 Tujuan:
 Mempersiapkan fitur konten (content_features) untuk sistem Content-Based Filtering berdasarkan:
@@ -853,7 +621,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 
 ## ⏏️ Menambahkan Kolom `film_id`
 
-![Gambar.26](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_addfilm.png)
+![Gambar.21](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_addfilm.png)
 
 ### 📌 Tujuan:
 
@@ -888,7 +656,7 @@ Karena `content_features` ini data yang sudah diubah menjadi *TF-IDF vector*, la
 ## 🎯 Encoding dan Decoding film_id
 Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritma machine learning biasanya membutuhkan input dalam bentuk angka, bukan string.
 
-![Gambar.27](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodefilm.png)
+![Gambar.22](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodefilm.png)
 
 ### 🔎 Pemrosesan Kode
 **1. 🔄 Mengambil film_id unik dalam bentuk list**
@@ -934,7 +702,7 @@ Langkah-langkah ini penting dalam sistem Collaborative Filtering karena algoritm
 ## 🎬 Encoding dan Decoding movie_label
 Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, karena model membutuhkan data dalam bentuk angka, bukan teks.
 
-![Gambar.28](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodemovie.png)
+![Gambar.23](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_encodemovie.png)
 
 ### 📈 Tahapan Pemrosesan:
 **1. 🔄 Mengubah movie_label menjadi list unik**
@@ -994,7 +762,7 @@ Langkah ini penting dalam sistem rekomendasi berbasis collaborative filtering, k
 ## 🔗 Menambahkan Kolom `track` dan `name` ke Dataset
 Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan movie_label ke dalam dataframe dataset_filter, yang akan berguna dalam proses training model berbasis Collaborative Filtering.
 
-![Gambar.29](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trackname.png)
+![Gambar.24](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trackname.png)
 
 ### 📑 Tahapan Pemrosesan
 **1. 📌 track → Hasil Encoding dari film_id**
@@ -1026,7 +794,7 @@ Tujuan dari langkah ini adalah menambahkan representasi numerik dari film_id dan
 ## 📊 Statistik Dasar Dataset Film
 Kode ini bertujuan untuk menampilkan jumlah item unik dan rentang rating pada dataset film yang telah diencode.
 
-![Gambar.30](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_statdas.png)
+![Gambar.25](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_statdas.png)
 
 ### 📑 Tahapan Pemrosesan
 1. **🔢 Jumlah Unik Film**
@@ -1066,7 +834,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 - `name`: Label film (movie_label)
 - `rating`: Rating sebagai representasi preferensi pengguna
 
-![Gambar.31](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparecollab.png)
+![Gambar.26](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparecollab.png)
 
 ### 📦 Tahap Pemrosesan:
 1. **Utama:**
@@ -1086,7 +854,7 @@ Pada tahap ini, kita menyiapkan dataset akhir yang akan digunakan untuk Collabor
 ## 📊 Menyiapkan Data Training dan Validasi untuk Collaborative Filtering
 Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine learning, khususnya model rekomendasi berbasis Collaborative Filtering Neural Network.
 
-![Gambar.32](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparetrainval.png)
+![Gambar.27](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_preparetrainval.png)
 
 ### 📑 Tahapan Pemrosesan:
 
@@ -1132,10 +900,232 @@ Pada bagian ini, data diformat agar bisa digunakan untuk melatih model machine l
 ### 📌 Catatan
 **Data sekarang sudah siap digunakan untuk melatih model rekomendasi berbasis neural network seperti Embedding + Dense layers.**
 
-## 💡 Model RecommenderNet: Collaborative Filtering dengan Neural Network
+# Modeling
+Proses mendesain struktur data untuk keperluan penyimpanan dan analisis. 
+
+## A. Content Based Filtering Modeling
+## 📐 Penerapan TF-IDF dan Cosine Similarity
+
+![Gambar.28](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_penerapanconsine.png)
+
+1. 📚 Penjelasan
+
+| Langkah                  | Penjelasan                                                                                                                                            |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TfidfVectorizer()`      | Membuat objek untuk mengubah teks menjadi vektor numerik berbasis frekuensi dan kekhasan kata (TF-IDF).                                               |
+| `fit_transform(...)`     | Menerapkan TF-IDF pada kolom `content_features`, menghasilkan matriks numerik berdimensi `(9724, fitur unik)`.                                        |
+| `cosine_similarity(...)` | Menghitung kemiripan (cosine similarity) antar semua film berdasarkan vektor kontennya. Hasilnya adalah **matriks simetri** berukuran `(9724, 9724)`. |
+
+---
+2. 📏 Hasil:
+`Cosine similarity matrix shape: (9724, 9724)`
+
+Artinya:
+- Kita memiliki 9724 film unik.
+- Matriks ini menunjukkan tingkat kemiripan antar setiap pasang film.
+- Nilai kemiripan berkisar antara 0 (tidak mirip) hingga 1 (sangat mirip).
+
+## Mengubah TF-IDF Matrix Menjadi Dataframe
+
+![Gambar.29](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_ubahtfidf.png)
+
+### 💡 Tujuan:
+- Kode ini mengubah TF-IDF matrix yang sebelumnya berbentuk sparse (hemat memori) menjadi DataFrame pandas yang mudah dibaca dan dianalisis.
+- Berguna untuk mengecek atau men-debug nilai TF-IDF tiap film secara manual.
+- Bisa juga dipakai untuk visualisasi atau analisis fitur konten lebih lanjut (misalnya: genre mana yang paling banyak muncul atau paling kuat bobotnya di film tertentu).
+
+---
+### 📚 Penjelasan:
+
+| Komponen                                  | Penjelasan                                                                                                                                                                        |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tfidf_matrix`                            | Matriks hasil transformasi `TfidfVectorizer`, berisi bobot TF-IDF dari setiap fitur (genre + panjang judul) untuk tiap film.                                                      |
+| `.todense()`                              | Mengubah sparse matrix menjadi dense (matriks penuh), agar bisa dibaca sebagai tabel.                                                                                             |
+| `tfidf.get_feature_names_out()`           | Mengambil semua **fitur** (kata-kata unik dari `content_features`, misalnya: `Action`, `Comedy`, `Thriller`, `16`, dll) yang dipakai dalam TF-IDF. Ini akan jadi kolom DataFrame. |
+| `index=content_based_data["movie_label"]` | Menjadikan **label film** sebagai indeks baris (row) dari DataFrame. Setiap baris mewakili satu film.                                                                             |
+
+---
+
+### ✅ Kesimpulan:
+tfidf_df akan menjadi DataFrame dengan:
+- Rows: Nama-nama film (movie_label)
+- Columns: Fitur konten unik (genre + panjang judul)
+- Values: Nilai bobot TF-IDF (semakin tinggi → kata tersebut penting bagi film itu)
+
+## 📊 Consine Similarity
+
+### Apa Itu cosine_similarity?
+`cosine_similarity` menghitung kemiripan antara dua vektor berdasarkan sudut di antara mereka, dengan nilai antara:
+- 1.0 → dua item identik
+- 0.0 → dua item tidak mirip sama sekali
+
+Semakin tinggi nilainya, semakin mirip dua film tersebut dari segi konten (genre + panjang judul).
+
+---
+### 🎯 Kegunaan Matriks Ini:
+- Untuk sistem rekomendasi berbasis konten (Content-Based Filtering).
+- Saat user menyukai film tertentu (misalnya film ke-0), kita bisa ambil film lain yang punya nilai similarity tertinggi terhadap film tersebut.
+
+![Gambar.30](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinemain.png)
+
+---
+### 🧮 Penjelasan Matriks Hasil:
+Matriks cosine_sim adalah matriks simetris berukuran (9724, 9724), karena membandingkan setiap film dengan semua film lainnya, termasuk dirinya sendiri.
+
+Misalnya:
+- cosine_sim[0][0] = 1.0 → film ke-0 dibanding dengan dirinya sendiri (selalu 1).
+- cosine_sim[0][1] = 0.08528593 → film ke-0 dan film ke-1 miripnya 8.5% secara konten.
+- cosine_sim[2][973] = 0.31919541 → film ke-2 dan film ke-973 memiliki tingkat kemiripan 31.9%.
+- Banyak nilai 0.0 karena genre atau panjang judul tidak sama → tidak mirip.
+
+---
+### 📝 Kesimpulan:
+Matriks cosine_sim berisi skor kemiripan antar film berdasarkan fitur konten (genre + panjang judul) yang telah diubah ke bentuk TF-IDF. Dan ini adalah dasar utama untuk membangun sistem rekomendasi film otomatis berbasis konten.
+
+## ⚙️ Penerapan Consine Similarity
+
+![Gambar.31](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_consinesubmain.png)
+
+### 🎯 Tujuan:
+-  untuk membuat sistem rekomendasi film.
+-  Ketika user memilih 1 film, kita bisa:
+  - Ambil baris dari cosine_sim_df
+  - Urutkan film yang paling mirip
+  - Rekomendasikan 5–10 film teratas
+
+---
+### 📌 Penjelasan Setiap Bagian:
+1. cosine_sim = cosine_similarity(tfidf_matrix)
+- Menghitung kemiripan (cosine similarity) antar semua film berdasarkan content_features (genre + panjang judul).
+- Output: array (9724, 9724) berisi nilai kemiripan antara semua kombinasi film.
+
+2. cosine_sim_df = pd.DataFrame(...)
+- Membuat DataFrame kemiripan antar film dengan:
+    - Index = nama lengkap film (movie_label)
+    - Kolom = juga nama lengkap film
+- Hasilnya:
+
+| movie\_label ↓ | Film A | Film B | Film C | ... |
+| -------------- | ------ | ------ | ------ | --- |
+| Film A         | 1.0    | 0.23   | 0.0    | ... |
+| Film B         | 0.23   | 1.0    | 0.09   | ... |
+| Film C         | 0.0    | 0.09   | 1.0    | ... |
+
+3. cosine_sim_df.sample(5, axis=1).sample(15, axis=0)
+- Menampilkan 5 kolom acak (film) dan 15 baris acak (film).
+- Tujuannya untuk melihat cuplikan dari matriks kemiripan tanpa menampilkan semuanya.
+- Output:
+
+|movie\_label ↓       | Strictly Sexual | Firefox | Computer Wore Tennis Shoes | Rise of the Planet of the Apes | Zombie Strippers |
+| -------------------- | --------------- | ------- | -------------------------- | ------------------------------ | ---------------- |
+| Swimming with Sharks | 0.238           | 0.0     | 0.106                      | 0.075                          | 0.126            |
+| Highway 61           | 0.154           | 0.0     | 0.126                      | 0.0                            | 0.151            |
+| Days of Thunder      | 0.837           | 0.163   | 0.0                        | 0.214                          | 0.0              |
+
+- Penjelasan:
+  - Semua nilai berkisar antara 0 - 1:
+  - 1.0 → identik (film dengan dirinya sendiri).
+    > 0.5 → cukup mirip dari sisi genre dan panjang judul.
+  - 0.0 → tidak ada kemiripan (tidak ada kata/fitur yang sama di TF-IDF-nya).
+
+> Contoh: Days of Thunder punya similarity tinggi (0.837) dengan Strictly Sexual, berarti mereka punya genre atau panjang judul yang sangat mirip.
+
+## 🧠 Membuat Fungsi `content_based_movie_recommendations`
+
+![Gambar.32](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_systemreq.png)
+
+### 🎯 Tujuan:
+Memberikan rekomendasi film berdasarkan konten (genre + panjang judul) menggunakan cosine similarity.
+
+---
+### 🔍 Penjelasan Setiap Baris:
+1. 🟩 match = items[items["title"].str.lower() == title.lower()]
+- Mencari judul film yang cocok dari parameter title.
+- .str.lower() untuk menghindari perbedaan huruf kapital saat mencocokkan.
+
+2. 🟥 if match.empty: return ...
+Jika judul tidak ditemukan dalam data, maka fungsi akan mengembalikan pesan error.
+
+3. 🟦 movie_label = match.iloc[0]["movie_label"]
+- Mengambil label lengkap dari film yang ditemukan.
+- Label ini digunakan untuk mengambil skor kemiripan dari cosine_sim_df.
+
+4. 🟧 sim_scores = similarity_data[movie_label].sort_values(ascending=False)
+- Mengambil seluruh nilai similarity dari film tersebut ke semua film lain.
+- Diurutkan dari paling mirip ke paling tidak mirip (nilai cosine tertinggi ke rendah).
+
+5. 🟨 top_indices = sim_scores.iloc[1:k+1].index
+- Mengambil k film paling mirip.
+- iloc[1:k+1] artinya mulai dari indeks ke-1 agar tidak mengambil film itu sendiri (indeks ke-0 = film itu sendiri, similarity-nya pasti 1.0).
+
+6. 🟫 return items[items["movie_label"].isin(top_indices)].reset_index(drop=True)
+- Mengembalikan k film yang paling mirip berdasarkan movie_label.
+- reset_index(drop=True) agar indeks rapi saat ditampilkan.
+---
+### 📚 Ringkasan Fungsi
+
+| Komponen             | Fungsi                                                       |
+| -------------------- | ------------------------------------------------------------ |
+| **title**            | Judul film yang dimasukkan user                              |
+| **similarity\_data** | Matriks cosine similarity antar film                         |
+| **items**            | Dataset yang memuat info film dan fitur kontennya            |
+| **k**                | Jumlah film rekomendasi yang ingin ditampilkan (default: 10) |
+
+## 🔎 Contoh Pencarian Dataset Content
+
+![Gambar.33](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_pencariandataset.png)
+
+### 🎯 Tujuan:
+Mencari semua film dalam dataset yang judulnya mengandung kata "Toy Story", baik huruf besar maupun kecil (case=False).
+
+--- 
+### ✅ Insight:
+
+| Aspek                | Penjelasan                                                                                                                                                                                                            |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Jumlah film**      | Ada **3 film** yang memiliki judul dengan "Toy Story", yaitu seri pertama, kedua, dan ketiga.                                                                                                                         |
+| **Genre**            | Ketiganya memiliki **genre yang identik**, yaitu: `Adventure`, `Animation`, `Children`, `Comedy`, dan `Fantasy`.                                                                                                      |
+| **Rating rata-rata** | Rating-nya relatif **tinggi dan konsisten**, dengan skor **4.0** hingga **4.5**, menunjukkan bahwa film ini sangat disukai pengguna.                                                                                  |
+| **Panjang judul**    | `Toy Story (1995)` memiliki panjang **16 karakter**, sedangkan dua film lainnya **18 karakter**. Ini masuk dalam fitur `title_length`.                                                                                |
+| **Content features** | Ketiganya memiliki `content_features` yang hampir identik (kombinasi genre + panjang judul), sehingga kemungkinan besar akan **saling merekomendasikan** jika digunakan pada sistem **content-based recommendation**. |
+
+
+## 🏃‍♂️ Menjalankan Model Content Based Filtering
+
+![Gambar.34](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runcbm.png)
+
+### 🎯 Tujuan:
+Fungsi `content_based_movie_recommendations()` mencari film yang paling mirip secara konten (genre dan panjang judul) dengan film "Toy Story (1995)", berdasarkan cosine similarity dari representasi TF-IDF.
+
+---
+### ✅ Insight:
+- Sistem ini belum mempertimbangkan plot cerita, aktor, atau visual, hanya berdasarkan genre dan panjang judul (konten eksplisit).
+- Kalau kamu ingin meningkatkan akurasi rekomendasi, bisa:
+  - Menambahkan sinopsis/overview film
+  - Menambahkan sutradara, pemeran, atau tahun rilis
+  - Menggabungkan metode ini dengan collaborative filtering
+
+---
+### Top N(Berdasarkan Film `Toy Story (1995)`)
+
+| No | Title | Movie Label | Content Features |
+|----|-------|-------------|------------------|
+| 0 | Space Jam (1996) | Space Jam (1996) (Adventure\|Animation\|Children\|Comedy\|Fantasy\|Sci-Fi) | Adventure Animation Children Comedy Fantasy Sci-Fi |
+| 1 | Enchanted (2007) | Enchanted (2007) (Adventure\|Animation\|Children\|Comedy\|Fantasy\|Musical) | Adventure Animation Children Comedy Fantasy Musical |
+| 2 | Surf's Up (2007) | Surf's Up (2007) (Animation\|Children\|Comedy) | Animation Children Comedy |
+| 3 | Life-Size (2000) | Life-Size (2000) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+| 4 | Anomalisa (2015) | Anomalisa (2015) (Animation\|Comedy\|Fantasy) | Animation Comedy Fantasy |
+| 5 | Peter Pan (2003) | Peter Pan (2003) (Action\|Adventure\|Children\|Fantasy) | Action Adventure Children Fantasy |
+| 6 | Ferdinand (2017) | Ferdinand (2017) (Animation\|Children\|Comedy) | Animation Children Comedy |
+| 7 | Like Mike (2002) | Like Mike (2002) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+| 8 | Wild, The (2006) | Wild, The (2006) (Adventure\|Animation\|Children\|Comedy\|Fantasy) | Adventure Animation Children Comedy Fantasy |
+| 9 | Pinocchio (2002) | Pinocchio (2002) (Children\|Comedy\|Fantasy) | Children Comedy Fantasy |
+
+## B. Collaborative-based Filtering Modeling
+### 💡 Model RecommenderNet: Collaborative Filtering dengan Neural Network
 Model ini merupakan Neural Collaborative Filtering berbasis Embedding Layer. 
 
-![Gambar.33](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_modelcollab.png)
+![Gambar.35](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_modelcollab.png)
 
 - 🎯 Tujuannya:
    - memprediksi skor rating (yang telah dinormalisasi) dari pasangan track dan name (dalam konteks ini keduanya adalah film).
@@ -1214,7 +1204,7 @@ Model ini akan belajar:
 ## 🔧 Kompilasi Model RecommenderNet
 Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compile model agar siap untuk dilatih.
 
-![Gambar.34](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_compilemodelcollab.png)
+![Gambar.36](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_compilemodelcollab.png)
 
 ### Tahapan Modelling
 **1. 📦 Membuat Instance Model**
@@ -1252,7 +1242,7 @@ Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compi
 
 ## 🚀 Melatih Model
 
-![Gambar.35](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trainmodel.png)
+![Gambar.37](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_trainmodel.png)
 
 ### 📝 Penjelasan Parameter:
 | Parameter                        | Fungsi                                                                                                          |
@@ -1269,30 +1259,10 @@ Setelah membuat arsitektur RecommenderNet, langkah selanjutnya adalah meng-compi
   - Nilai loss dan RMSE untuk training dan validasi setiap epoch.
   - Data ini bisa digunakan untuk visualisasi kurva learning.
 
-## C. Testing System Recommendation
-
-![Gambar.36](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/model_grafik.png)
-
-### 📌 Penjelasan Grafik
-
-**1. 📉 RMSE Training Menurun Konsisten**
-- Grafik menunjukkan bahwa RMSE pada data training terus menurun secara stabil seiring bertambahnya epoch. Ini artinya:
-  - Model berhasil belajar dari data.
-  - Tidak ada masalah besar seperti overfitting ekstrim (kalau ada, RMSE training akan menurun tajam tapi validation malah naik).
-  - Stabilitas Model
-
-**2. 🚀 RMSE pada data validasi tampak stabil**
-- Model tidak mengalami perubahan drastis atau ketidakstabilan saat pelatihan.
-- Bisa menjadi indikasi bahwa model cukup resisten terhadap noise, atau memang validasi datanya sudah cukup homogen.
-- Cocok untuk Use Case Ringan
-    > Karena ini adalah eksperimen ML sederhana, model ini sudah cukup representatif untuk digunakan dalam pembelajaran, prototipe awal, atau aplikasi dengan lingkup terbatas seperti:
-    - Sistem rekomendasi lokal
-    - Uji coba model embedding
-    - Pembelajaran konsep rekomendasi
 
 ## Membuat Fungsi Rekomendasi
 
-![Gambar.37](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_fungsireq.png)
+![Gambar.38](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_fungsireq.png)
 
 ### 💡 Fungsi dan Tujuan
 Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input tertentu (judulnya), dengan memanfaatkan model pembelajaran mesin yang sudah dilatih.
@@ -1305,7 +1275,7 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
 
 ## 🗳️ Penyaringan Baris
 
-![Gambar.37](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_filterbaris.png)
+![Gambar.39](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_filterbaris.png)
 
 ### 🔍 Penjelasan:
 *1. 🧩Kode:* `dataset_filter["title"].eq("Toy Story (1995)")`:
@@ -1324,7 +1294,7 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
 
 ## ⚙️ Menjalankan Fungsi Machine Learning
 
-![Gambar.38](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runmachine.png)
+![Gambar.40](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/ss_runmachine.png)
 
 ### ✅ Penjelasan Langkah yang Terjadi:
 - Pencocokan Label:
@@ -1339,12 +1309,46 @@ Fungsi ini bertujuan untuk memberikan rekomendasi film berdasarkan film input te
 - Pemilihan Top-N:
     > Mengambil top N film (default top_n=10) dengan skor prediksi tertinggi.
 
-- Output:
+- Hasil Top-N(Berdasarkan Film Toy Story (1995) (Adventure Animation Children Comedy Fantasy)):
     > Menampilkan daftar film rekomendasi dengan:
+
+| No | Film Title | Year | Genre | Rating |
+|----|------------|------|-------|--------|
+| 1 | In the Company of Men | 1997 | Comedy Drama | 5.0 |
+| 2 | Notorious | 1946 | Film-Noir Romance Thriller | 5.0 |
+| 3 | Star Wars: Episode V - The Empire Strikes Back | 1980 | Action Adventure Sci-Fi | 5.0 |
+| 4 | On the Trail of the Bremen Town Musicians | 1973 | Adventure Animation Children | 5.0 |
+| 5 | Adam's Rib | 1949 | Comedy Romance | 5.0 |
+| 6 | Mrs. Dalloway | 1997 | Drama Romance | 5.0 |
+| 7 | Man Bites Dog (C'est arrivé près de chez vous) | 1992 | Comedy Crime Drama Thriller | 5.0 |
+| 8 | Winnie the Pooh and the Blustery Day | 1968 | Animation Children Musical | 5.0 |
+| 9 | Willy/Milly | 1986 | Comedy Fantasy | 5.0 |
+| 10 | Geri's Game | 1997 | Animation Children | 5.0 |
 
 - 🎬 Judul film:
     - Genre
     - Rating
+
+## Evaluasi Model
+
+![Gambar.41](https://raw.githubusercontent.com/awerrrr/Rekomendasi-Film/main/img/model_grafik.png)
+
+### 📌 Penjelasan Grafik
+
+**1. 📉 RMSE Training Menurun Konsisten**
+- Grafik menunjukkan bahwa RMSE pada data training terus menurun secara stabil seiring bertambahnya epoch. Ini artinya:
+  - Model berhasil belajar dari data.
+  - Tidak ada masalah besar seperti overfitting ekstrim (kalau ada, RMSE training akan menurun tajam tapi validation malah naik).
+  - Stabilitas Model
+
+**2. 🚀 RMSE pada data validasi tampak stabil**
+- Model tidak mengalami perubahan drastis atau ketidakstabilan saat pelatihan.
+- Bisa menjadi indikasi bahwa model cukup resisten terhadap noise, atau memang validasi datanya sudah cukup homogen.
+- Cocok untuk Use Case Ringan
+    > Karena ini adalah eksperimen ML sederhana, model ini sudah cukup representatif untuk digunakan dalam pembelajaran, prototipe awal, atau aplikasi dengan lingkup terbatas seperti:
+    - Sistem rekomendasi lokal
+    - Uji coba model embedding
+    - Pembelajaran konsep rekomendasi
 
 # Referensi
 [[1]]https://j-ptiik.ub.ac.id/index.php/j-ptiik/article/download/9163/4159/64730
